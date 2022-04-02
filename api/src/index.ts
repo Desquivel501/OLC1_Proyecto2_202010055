@@ -1,10 +1,12 @@
-import { assert } from "console";
+
+import { Console } from "console";
 import express from "express";
+import { Ambito } from "./interpreter/Misc/Ambito";
 
 const parser = require("./interpreter/grammar/grammar.js")
 var bodyParser = require('body-parser')
 const app = express();
-const port = 3000; // default port to listen
+const port = 5000; // default port to listen
 const path = require('path');
 const router = express.Router();
 
@@ -18,10 +20,30 @@ app.get('/',function(req,res){
   });
 
   app.post('/', (req,res)=>{
-    const exp = req.body.exp
-    const result = parser.parse(exp)
+
+    const entrada = req.body.exp
+    var json = [];
+
+    if(entrada == ""){
+      alert("Entrada Vacia")
+      return res.send("Cadena Vacia")
+    }
+    const result = parser.parse(entrada)
     console.log(result)
-    return res.send(result.execute())
+    var consola = "";
+    try{
+      const ambito = new Ambito(null)
+      for(const inst of result){
+        const cadenaActual = inst.execute(ambito);
+        if( cadenaActual != undefined){
+          consola += cadenaActual;
+        }
+      }
+    }catch(error){
+        console.log(error)
+    }
+    console.log(consola)
+    return res.send(consola)
 
   });
 
@@ -31,3 +53,4 @@ app.listen( port, () => {
     // tslint:disable-next-line:no-console
     console.log( `server started at http://localhost:${ port }` );
 } );
+

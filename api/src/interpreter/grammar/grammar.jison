@@ -2,6 +2,11 @@
     const {Aritmetica, TipoAritmetico} = require("../Expresion/Aritmetica")
     const {Literal, TipoLiteral} = require("../Expresion/Literal")
     const {Relacional, TipoRelacional} = require("../Expresion/Relacional")
+    const {Declaracion} = require("../Instruccion/Declaracion")
+    const {Print} = require('../Instruccion/Print')
+    const {Acceso} = require('../Expresion/Acceso')
+    const {Type} = require('../Expresion/Retorno')
+
 %}
 
 %lex
@@ -13,8 +18,17 @@
 "//".*                                  // comentario simple línea
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     // comentario multiple líneas
 
+"Println"                                     return 'TK_PRINTLN'; 
+"Print"                                     return 'TK_PRINT'; 
 "true"                                      return 'TK_TRUE'; 
-"false"                                      return 'TK_FALSE'; 
+"false"                                     return 'TK_FALSE'; 
+"int"                                       return 'TK_INT'; 
+"string"                                    return 'TK_STRING'; 
+"char"                                      return 'TK_CHAR'; 
+"boolean"                                   return 'TK_BOOLEAN'; 
+"doble"                                     return 'TK_DOBLE'; 
+
+
 
 
 \"[^\"]*\"                                  { yytext = yytext.substr(1,yyleng-2); return 'CADENA'; }             
@@ -29,7 +43,8 @@
 "{"                                         return 'TK_LLAVIZQ';
 "}"                                         return 'TK_LLAVDER';
 ";"                                         return 'TK_PTCOMA';
-":"                                         return 'TK_DOSPTS';
+":"                                         return 'TK_DOSPTS'; 
+","                                         return 'TK_COMA';
 
 "+"                                         return 'TK_SUMA';
 "-"                                         return 'TK_RESTA';
@@ -72,7 +87,7 @@
 
 %%
 
-ini : expression EOF{
+ini : instrucciones EOF{
     return $1
 }
 ;
@@ -80,32 +95,51 @@ ini : expression EOF{
 instrucciones
 	: instrucciones instruccion 	{ $1.push($2); $$ = $1; }
 	| instruccion					{ $$ = [$1]; }
-;
-
-instruccion
-    : expression TK_PTCOMA
     ;
 
+instruccion
+    : declaracion
+    | print
+    ;
 
-expression
-    : TK_RESTA expression %prec UMENOS              {$$ = new Aritmetica(new Literal("-1", TipoLiteral.NUMBER, @1.first_line,  @1.first_column), $2, TipoAritmetico.MULTIPLICACION, @1.first_line,  @1.first_column)}
-    | expression TK_SUMA expression                 {$$ = new Aritmetica($1, $3, TipoAritmetico.SUMA, @1.first_line,  @1.first_column)}
-    | expression TK_RESTA expression                {$$ = new Aritmetica($1, $3, TipoAritmetico.RESTA, @1.first_line,  @1.first_column)}
-    | expression TK_POR expression                  {$$ = new Aritmetica($1, $3, TipoAritmetico.MULTIPLICACION, @1.first_line,  @1.first_column)}
-    | expression TK_DIVIDIR expression              {$$ = new Aritmetica($1, $3, TipoAritmetico.DIVISION, @1.first_line,  @1.first_column)}
-    | expression TK_POTENCIA expression             {$$ = new Aritmetica($1, $3, TipoAritmetico.POTENCIA, @1.first_line,  @1.first_column)}
-    | expression TK_MODULO expression               {$$ = new Aritmetica($1, $3, TipoAritmetico.MODULO, @1.first_line,  @1.first_column)}
-    | TK_PARIZQ expression TK_PARDER                {$$ = $2}
+declaracion
+    : TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA       {$$ = new Declaracion(Type.NUMBER, $2, $4, @1.first_line, @1.first_column)}
+    | TK_DOBLE  IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA    {$$ = new Declaracion(Type.DOBLE, $2, $4, @1.first_line, @1.first_column)}
+    | TK_CHAR  IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA     {$$ = new Declaracion(Type.CHAR, $2, $4, @1.first_line, @1.first_column)}
+    | TK_STRING IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA    {$$ = new Declaracion(Type.STRING, $2, $4, @1.first_line, @1.first_column)}
+    | TK_BOOLEAN IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA   {$$ = new Declaracion(Type.BOOLEAN, $2, $4, @1.first_line, @1.first_column)}
+    ;
+    
 
-    | expression TK_MENOR expression                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
-    | expression TK_MAYOR expression                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
-    | expression TK_MENORIG expression              {$$ = new Relacional($1, $3, TipoRelacional.MENOR_IGUAL, @1.first_line,  @1.first_column)}
-    | expression TK_MAYORIG expression              {$$ = new Relacional($1, $3, TipoRelacional.MAYOR_IGUAL, @1.first_line,  @1.first_column)}
-    | expression TK_DOBLEIG expression              {$$ = new Relacional($1, $3, TipoRelacional.IGUAL_IGUAL, @1.first_line,  @1.first_column)}
-    | expression TK_NOIG expression                 {$$ = new Relacional($1, $3, TipoRelacional.DIFERENTE, @1.first_line,  @1.first_column)}
-    | TK_NOT expression                             {$$ = new Relacional($2, $2, TipoRelacional.NOT, @1.first_line,  @1.first_column)}
-    | expression TK_OR expression                   {$$ = new Relacional($1, $3, TipoRelacional.OR, @1.first_line,  @1.first_column)}
-    | expression TK_AND expression                  {$$ = new Relacional($1, $3, TipoRelacional.AND, @1.first_line,  @1.first_column)}
+print
+    :TK_PRINT TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,false, @1.first_line, @1.first_column)}
+    | TK_PRINTLN TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,true, @1.first_line, @1.first_column)}
+    ;
+
+listaExpresion
+    : listaExpresion TK_COMA expresion            {$1.push($3); $$ = $1;}
+    | expresion                                   {$$ = [$1]}   
+    ;     
+
+expresion
+    : TK_RESTA expresion %prec UMENOS             {$$ = new Aritmetica(new Literal("-1", TipoLiteral.NUMBER, @1.first_line,  @1.first_column), $2, TipoAritmetico.MULTIPLICACION, @1.first_line,  @1.first_column)}
+    | expresion TK_SUMA expresion                 {$$ = new Aritmetica($1, $3, TipoAritmetico.SUMA, @1.first_line,  @1.first_column)}
+    | expresion TK_RESTA expresion                {$$ = new Aritmetica($1, $3, TipoAritmetico.RESTA, @1.first_line,  @1.first_column)}
+    | expresion TK_POR expresion                  {$$ = new Aritmetica($1, $3, TipoAritmetico.MULTIPLICACION, @1.first_line,  @1.first_column)}
+    | expresion TK_DIVIDIR expresion              {$$ = new Aritmetica($1, $3, TipoAritmetico.DIVISION, @1.first_line,  @1.first_column)}
+    | expresion TK_POTENCIA expresion             {$$ = new Aritmetica($1, $3, TipoAritmetico.POTENCIA, @1.first_line,  @1.first_column)}
+    | expresion TK_MODULO expresion               {$$ = new Aritmetica($1, $3, TipoAritmetico.MODULO, @1.first_line,  @1.first_column)}
+    | TK_PARIZQ expresion TK_PARDER                {$$ = $2}
+
+    | expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
+    | expresion TK_MAYOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
+    | expresion TK_MENORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MENOR_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_MAYORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MAYOR_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_DOBLEIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.IGUAL_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_NOIG expresion                 {$$ = new Relacional($1, $3, TipoRelacional.DIFERENTE, @1.first_line,  @1.first_column)}
+    | TK_NOT expresion                             {$$ = new Relacional($2, $2, TipoRelacional.NOT, @1.first_line,  @1.first_column)}
+    | expresion TK_OR expresion                   {$$ = new Relacional($1, $3, TipoRelacional.OR, @1.first_line,  @1.first_column)}
+    | expresion TK_AND expresion                  {$$ = new Relacional($1, $3, TipoRelacional.AND, @1.first_line,  @1.first_column)}
 
     | ENTERO                                        {$$ = new Literal($1, TipoLiteral.NUMBER, @1.first_line,  @1.first_column)}
     | DECIMAL                                       {$$ = new Literal($1, TipoLiteral.DOBLE, @1.first_line,  @1.first_column)}
@@ -113,6 +147,8 @@ expression
     | TK_FALSE                                      {$$ = new Literal($1, TipoLiteral.BOOLEAN, @1.first_line,  @1.first_column)}
     | CADENA                                        {$$ = new Literal($1, TipoLiteral.STRING, @1.first_line,  @1.first_column)}
     | CHAR                                          {$$ = new Literal($1, TipoLiteral.CHAR, @1.first_line,  @1.first_column)}
+
+    |IDENTIFICADOR                                  {$$= new Acceso($1,@1.first_line, @1.first_column)}
     ;
 
 

@@ -14,7 +14,7 @@ export class Declaracion extends Instruccion{
         if(val.type == this.tipo){
             ambito.setVal(this.id, val.value, val.type, this.linea, this.columna)
         }else{
-            throw new Error_(this.linea, this.columna, 'Semantico', 'No se puede asignar: ' + this.tipo + ' a ' + val.type);
+            throw new Error_(this.linea, this.columna, 'Semantico', 'No se puede asignar: ' +  Type[val.type] + ' a ' + Type[this.tipo]);
         }
         
     }
