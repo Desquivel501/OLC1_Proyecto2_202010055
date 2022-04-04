@@ -8,13 +8,15 @@ export class Print extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
+        var cadena = "";
         for (const value of this.values) {
             const val = value.execute(ambito)
             if(this.newLine){
-                return val.value + "\n";
+                cadena += val.value + "\n";
             }else{
-                return val.value;
+                cadena += val.value;
             }
         }
+        return cadena;
     }
 }

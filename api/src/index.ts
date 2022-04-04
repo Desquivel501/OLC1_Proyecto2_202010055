@@ -9,8 +9,9 @@ const app = express();
 const port = 5000; // default port to listen
 const path = require('path');
 const router = express.Router();
+const cors =require('cors')
 
-
+app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
@@ -19,11 +20,10 @@ app.get('/',function(req,res){
     //__dirname : It will resolve to your project folder.
   });
 
-  app.post('/', (req,res)=>{
-
+  app.post('/',cors(), (req,res)=>{
+    res.set('Access-Control-Allow-Origin', '*');
     const entrada = req.body.exp
-    var json = [];
-
+    console.log(entrada)
     if(entrada == ""){
       alert("Entrada Vacia")
       return res.send("Cadena Vacia")
@@ -41,9 +41,15 @@ app.get('/',function(req,res){
       }
     }catch(error){
         console.log(error)
+        consola += error.getError()
     }
     console.log(consola)
-    return res.send(consola)
+
+    const jsonData = {
+      "res": String(consola)
+    }
+
+    return res.send(JSON.stringify(jsonData))
 
   });
 

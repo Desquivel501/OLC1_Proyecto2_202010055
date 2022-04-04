@@ -11,8 +11,24 @@ function App() {
     editorRef.current = editor; 
   }
 
-  function save() {
-    console.log(editorRef.current.getValue());
+  function enviar() {
+  
+    var command = editorRef.current.getValue()
+    const jsonData = {
+      "exp": String(command)
+    }
+
+    fetch('http://localhost:5000/', {  
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      mode: 'cors', 
+      body: JSON.stringify(jsonData)
+    })
+    .then(res => res.json())
+    .then(response =>{
+      console.log(response)
+      document.getElementById('terminal').value = response.res
+    })
   }
 
   return (
@@ -47,7 +63,7 @@ function App() {
 
           </div>
           <div class='column'>
-              <textarea class="textarea" readOnly={true}></textarea>
+              <textarea class="textarea" id = "terminal" readOnly={true}></textarea>
           </div>
         </div>
       </div>
@@ -55,7 +71,7 @@ function App() {
       <div class='wrapper'>
         <div class='row'>
           <div class='column'>
-            <button class="button" onClick={save}>Resultado</button>
+            <button class="button" onClick={enviar}>Resultado</button>
           </div>
         </div>
       </div>

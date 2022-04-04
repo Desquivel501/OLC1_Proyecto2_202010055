@@ -10,6 +10,25 @@ export class Aritmetica extends Expresion{
     }
 
     public execute(ambito:Ambito): Retorno{
+        
+        if(this.tipo == TipoAritmetico.INCRE){
+            const leftValue = this.left.execute(ambito);
+            if(leftValue.type == Type.NUMBER){
+                return{value:(leftValue.value+1), type: Type.NUMBER}
+            }else{
+                throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
+            }
+            
+        }
+        if(this.tipo == TipoAritmetico.DECRE){
+            const leftValue = this.left.execute(ambito);
+            if(leftValue.type == Type.NUMBER){
+                return{value:(leftValue.value-1), type: Type.NUMBER}
+            }else{
+                throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
+            }
+        }
+
         const leftValue = this.left.execute(ambito);
         const rightValue = this.right.execute(ambito);
         const tipoDominante = this.tipoDominante(leftValue.type, rightValue.type);
@@ -35,7 +54,7 @@ export class Aritmetica extends Expresion{
                         return{value: leftValue.value + rightValue.value, type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
                 break;
@@ -56,30 +75,30 @@ export class Aritmetica extends Expresion{
                         return{value:(leftValue.value - rightValue.value), type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
                 break;
             }
             case TipoAritmetico.DIVISION:{
                 if(leftValue.type == Type.BOOLEAN ||  rightValue.type == Type.BOOLEAN){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 switch(tipoDominante){
                     case Type.NUMBER:{
                         if(rightValue.value == 0){
-                            throw new Error_(this.linea, this.columna, "SEMANTICO", "NO SE PUEDE DIVIDIR ENTRE 0");
+                            throw new Error_(this.linea, this.columna, "Semantico", "No se puede dividir entre 0");
                         }
                         return{value:(leftValue.value / rightValue.value), type: Type.DOBLE}
                     }
                     case Type.DOBLE:{
                         if(rightValue.value == 0){
-                            throw new Error_(this.linea, this.columna, "SEMANTICO", "NO SE PUEDE DIVIDIR ENTRE 0");
+                            throw new Error_(this.linea, this.columna, "Semantico", "No se puede dividir entre 0");
                         }
                         return{value:(leftValue.value / rightValue.value), type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
                 break;
@@ -87,7 +106,7 @@ export class Aritmetica extends Expresion{
             case TipoAritmetico.MULTIPLICACION:{
 
                 if(leftValue.type == Type.BOOLEAN ||  rightValue.type == Type.BOOLEAN){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 switch(tipoDominante){
                     case Type.NUMBER:{
@@ -97,17 +116,17 @@ export class Aritmetica extends Expresion{
                         return{value:(leftValue.value * rightValue.value), type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
                 break;
             }
             case TipoAritmetico.POTENCIA:{
                 if(leftValue.type == Type.BOOLEAN ||  rightValue.type == Type.BOOLEAN){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 if(leftValue.type == Type.CHAR ||  rightValue.type == Type.CHAR){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
 
                 switch(tipoDominante){
@@ -118,17 +137,17 @@ export class Aritmetica extends Expresion{
                         return{value:(Math.pow(leftValue.value, rightValue.value)), type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
             }
 
             case TipoAritmetico.MODULO:{
                 if(leftValue.type == Type.BOOLEAN ||  rightValue.type == Type.BOOLEAN){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 if(leftValue.type == Type.CHAR ||  rightValue.type == Type.CHAR){
-                    throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                    throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
 
                 switch(tipoDominante){
@@ -139,10 +158,11 @@ export class Aritmetica extends Expresion{
                         return{value:(leftValue.value % rightValue.value), type: Type.DOBLE}
                     }
                     default:{
-                        throw new Error_(this.linea, this.columna, "SEMANTICO", "TIPOS INCOMPATIBLES");
+                        throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                     }
                 }
             }
+            
         }
 
     }
@@ -154,5 +174,7 @@ export enum TipoAritmetico{
     DIVISION,
     MULTIPLICACION,
     POTENCIA,
-    MODULO
+    MODULO,
+    INCRE,
+    DECRE
 }

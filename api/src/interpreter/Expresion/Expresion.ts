@@ -15,4 +15,8 @@ export abstract class Expresion{
     public tipoRelacional(tipo1:Type, tipo2:Type){
         return tipoR[tipo1][tipo2];
     }
+
+    public casteoValido(tipo1:Type, tipo2:Type){
+        return tipoR[tipo1][tipo2];
+    }
 }

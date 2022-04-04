@@ -11,6 +11,6 @@ export class Acceso extends Expresion{
     public execute(ambito: Ambito): Retorno {
         const value = ambito.getVal(this.id)
         if(value != null) return {value:value.valor, type:value.type}
-        throw new Error_(this.linea, this.columna, 'Semantico', `No se encuentra la variable ${this.id}`);
+        throw new Error_(this.linea, this.columna, 'Semantico', `No se encuentra la variable "${this.id}"`);
     }
 }

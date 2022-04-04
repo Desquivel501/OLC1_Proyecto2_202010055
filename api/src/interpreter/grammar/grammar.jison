@@ -2,6 +2,7 @@
     const {Aritmetica, TipoAritmetico} = require("../Expresion/Aritmetica")
     const {Literal, TipoLiteral} = require("../Expresion/Literal")
     const {Relacional, TipoRelacional} = require("../Expresion/Relacional")
+    const {Casteo} = require("../Expresion/Casteo")
     const {Declaracion} = require("../Instruccion/Declaracion")
     const {Print} = require('../Instruccion/Print')
     const {Acceso} = require('../Expresion/Acceso')
@@ -79,7 +80,8 @@
 %left 'TK_MODULO'
 %left 'TK_SUMA' 'TK_RESTA'
 %left 'TK_POR' 'TK_DIVIDIR'
-%left 'TK_POTENCIA'
+%nonassoc 'TK_POTENCIA'
+%left CASTEO
 %left UMENOS
 
 
@@ -100,15 +102,26 @@ instrucciones
 instruccion
     : declaracion
     | print
+    | unaria
     ;
 
+
+
 declaracion
-    : TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA       {$$ = new Declaracion(Type.NUMBER, $2, $4, @1.first_line, @1.first_column)}
-    | TK_DOBLE  IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA    {$$ = new Declaracion(Type.DOBLE, $2, $4, @1.first_line, @1.first_column)}
-    | TK_CHAR  IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA     {$$ = new Declaracion(Type.CHAR, $2, $4, @1.first_line, @1.first_column)}
-    | TK_STRING IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA    {$$ = new Declaracion(Type.STRING, $2, $4, @1.first_line, @1.first_column)}
-    | TK_BOOLEAN IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA   {$$ = new Declaracion(Type.BOOLEAN, $2, $4, @1.first_line, @1.first_column)}
-    ;
+    : TK_INT listaIdentificador TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion(Type.NUMBER, $2, $4, true, @1.first_line, @1.first_column)}
+    | TK_DOBLE  listaIdentificador TK_IGUAL expresion TK_PTCOMA      {$$ = new Declaracion(Type.DOBLE, $2, $4, true, @1.first_line, @1.first_column)}
+    | TK_CHAR  listaIdentificador TK_IGUAL expresion TK_PTCOMA       {$$ = new Declaracion(Type.CHAR, $2, $4, true, @1.first_line, @1.first_column)}
+    | TK_STRING listaIdentificador TK_IGUAL expresion TK_PTCOMA      {$$ = new Declaracion(Type.STRING, $2, $4, true, @1.first_line, @1.first_column)}
+    | TK_BOOLEAN listaIdentificador TK_IGUAL expresion TK_PTCOMA     {$$ = new Declaracion(Type.BOOLEAN, $2, $4, true, @1.first_line, @1.first_column)}
+
+    | TK_INT listaIdentificador TK_PTCOMA                            {$$ = new Declaracion(Type.NUMBER, $2, null, true, @1.first_line, @1.first_column)}
+    | TK_DOBLE  listaIdentificador TK_PTCOMA                         {$$ = new Declaracion(Type.DOBLE, $2, null, true, @1.first_line, @1.first_column)}
+    | TK_CHAR  listaIdentificador TK_PTCOMA                          {$$ = new Declaracion(Type.CHAR, $2, null, true, @1.first_line, @1.first_column)}
+    | TK_STRING listaIdentificador TK_PTCOMA                         {$$ = new Declaracion(Type.STRING, $2, null, true, @1.first_line, @1.first_column)}
+    | TK_BOOLEAN listaIdentificador TK_PTCOMA                        {$$ = new Declaracion(Type.BOOLEAN, $2, null, true, @1.first_line, @1.first_column)}
+
+    | IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA                     {$$ = new Declaracion(-1, $1, $3, false,@1.first_line, @1.first_column)}
+    ;   
     
 
 print
@@ -119,7 +132,12 @@ print
 listaExpresion
     : listaExpresion TK_COMA expresion            {$1.push($3); $$ = $1;}
     | expresion                                   {$$ = [$1]}   
-    ;     
+    ;  
+
+listaIdentificador
+    : listaIdentificador TK_COMA IDENTIFICADOR    {$1.push($3); $$ = $1;}
+    | IDENTIFICADOR                               {$$ = [$1]} 
+    ;
 
 expresion
     : TK_RESTA expresion %prec UMENOS             {$$ = new Aritmetica(new Literal("-1", TipoLiteral.NUMBER, @1.first_line,  @1.first_column), $2, TipoAritmetico.MULTIPLICACION, @1.first_line,  @1.first_column)}
@@ -129,7 +147,10 @@ expresion
     | expresion TK_DIVIDIR expresion              {$$ = new Aritmetica($1, $3, TipoAritmetico.DIVISION, @1.first_line,  @1.first_column)}
     | expresion TK_POTENCIA expresion             {$$ = new Aritmetica($1, $3, TipoAritmetico.POTENCIA, @1.first_line,  @1.first_column)}
     | expresion TK_MODULO expresion               {$$ = new Aritmetica($1, $3, TipoAritmetico.MODULO, @1.first_line,  @1.first_column)}
-    | TK_PARIZQ expresion TK_PARDER                {$$ = $2}
+    | TK_PARIZQ expresion TK_PARDER               {$$ = $2}
+
+    | expresion TK_SUMA TK_SUMA                   {$$ = new Aritmetica($1, null, TipoAritmetico.INCRE, @1.first_line,  @1.first_column)}
+    | expresion TK_RESTA TK_RESTA                 {$$ = new Aritmetica($1, null, TipoAritmetico.DECRE, @1.first_line,  @1.first_column)}
 
     | expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
     | expresion TK_MAYOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
@@ -148,8 +169,22 @@ expresion
     | CADENA                                        {$$ = new Literal($1, TipoLiteral.STRING, @1.first_line,  @1.first_column)}
     | CHAR                                          {$$ = new Literal($1, TipoLiteral.CHAR, @1.first_line,  @1.first_column)}
 
-    |IDENTIFICADOR                                  {$$= new Acceso($1,@1.first_line, @1.first_column)}
+    | IDENTIFICADOR                                  {$$= new Acceso($1,@1.first_line, @1.first_column)}
+
+    | TK_PARIZQ TK_INT TK_PARDER expresion  %prec CASTEO            {$$= new Casteo(Type.NUMBER,$4,@1.first_line, @1.first_column)}
+    | TK_PARIZQ TK_DOBLE TK_PARDER expresion  %prec CASTEO          {$$= new Casteo(Type.DOBLE,$4,@1.first_line, @1.first_column)}
+    | TK_PARIZQ TK_CHAR TK_PARDER expresion   %prec CASTEO         {$$= new Casteo(Type.CHAR,$4,@1.first_line, @1.first_column)}
+
     ;
 
+unaria
+    : IDENTIFICADOR TK_SUMA TK_SUMA TK_PTCOMA                 {$$ = new Declaracion(-1, $1, new Aritmetica(new Acceso($1,@1.first_line, @1.first_column), null, TipoAritmetico.INCRE, @1.first_line,  @1.first_column), false, @1.first_line, @1.first_column)}
+    | IDENTIFICADOR TK_RESTA TK_RESTA TK_PTCOMA               {$$ = new Declaracion(-1, $1, new Aritmetica(new Acceso($1,@1.first_line, @1.first_column), null, TipoAritmetico.DECRE, @1.first_line,  @1.first_column), false, @1.first_line, @1.first_column)}
+    ;
 
+// casteo
+//     : TK_PARIZQ TK_INT TK_PARDER expresion              {$$= new Casteo($2,$4,@1.first_line, @1.first_column)}
+//     | TK_PARIZQ TK_DOBLE TK_PARDER expresion            {$$= new Casteo($2,$4,@1.first_line, @1.first_column)}
+//     | TK_PARIZQ TK_CHAR TK_PARDER expresion             {$$= new Casteo($2,$4,@1.first_line, @1.first_column)}
+//     ;
 

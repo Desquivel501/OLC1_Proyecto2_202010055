@@ -18,7 +18,7 @@ export class Relacional extends Expresion{
             if(leftValue.type == Type.BOOLEAN){
                 return{value:(!leftValue.value), type: Type.BOOLEAN}
             }else{
-                throw new Error_(this.linea, this.columna, "SEMANTICO", "NO SE PUEDE REALIZAR OPERACION LOGICA EN " + leftValue.type);
+                throw new Error_(this.linea, this.columna, "Semantico", "No se puede realizar operacion logica en  " + Type[leftValue.type]);
             }
         }
 
@@ -72,7 +72,7 @@ export class Relacional extends Expresion{
                 }
             }
         }else{
-            throw new Error_(this.linea, this.columna, "SEMANTICO", "NO SE PUEDE REALIZAR OPERACION RELACIONAL ENTRE " + leftValue.type + " Y " + rightValue.type);
+            throw new Error_(this.linea, this.columna, "Semantico", "No se puede realizar operacion relacional entre " + Type[leftValue.type] + " y " + Type[rightValue.type]);
         }
         
     }

@@ -18,7 +18,7 @@ export class Ambito{
                 if(val.type == type){
                     env.variables.set(id, new Simbolo(value,id,type))
                 }else{
-                    throw new Error_(linea, columna, 'Semantico', 'No se puede asignar: ' + type + ' a ' + val.type);
+                    throw new Error_(linea, columna, 'Semantico', 'No se puede asignar: ' + Type[type] + ' a ' + Type[val.type]);
                 }
             }
             env = env.anterior
