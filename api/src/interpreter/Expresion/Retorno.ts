@@ -64,3 +64,11 @@ export const casteo = [
         0,0,0,0,0
     ]
 ]
+
+export const defaults = [
+    0,
+    0.0,
+    true,
+    "0",
+    ""
+]

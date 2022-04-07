@@ -40,13 +40,14 @@ app.get('/',function(req,res){
         }
       }
     }catch(error){
-        console.log(error)
+        // console.log(error)
         consola += error.getError()
     }
     console.log(consola)
 
     const jsonData = {
-      "res": String(consola)
+      "res": String(consola),
+      "obj": result
     }
 
     return res.send(JSON.stringify(jsonData))

@@ -16,6 +16,9 @@ export class Declaracion extends Instruccion{
                 const val = this.value.execute(ambito)
                 if(val.type == this.tipo){
                     for(const id of this.ids){
+                        if(ambito.getVal(id) != null){
+                            throw new Error_(this.linea, this.columna, 'Semantico', 'La variable "' + id + '" ya ha sido declarada');
+                        }
                         ambito.setVal(id, val.value, val.type, this.linea, this.columna)
                     }
                 }else{
@@ -23,20 +26,29 @@ export class Declaracion extends Instruccion{
                 }
             }else{
                 for(const id of this.ids){
-                    ambito.setVal(id, null, this.tipo, this.linea, this.columna)
+                    const valor = defaults[this.tipo]
+                    ambito.setVal(id, valor, this.tipo, this.linea, this.columna)
                 }
             }
         }else{
-
+            
             for(const id of this.ids){
                 if(ambito.getVal(id) != null){
                     const val = this.value.execute(ambito)
+                    console.log(id," ",val.value)
                     ambito.setVal(id, val.value, val.type, this.linea, this.columna)
+                }else{
+                    throw new Error_(this.linea, this.columna, 'Semantico', 'La variable "' + id + '" no ha sido declarada');
                 }
             }
-
-            
         }
-        
     }
 }
+
+export const defaults = [
+    0,
+    0.0,
+    true,
+    "0",
+    ""
+]

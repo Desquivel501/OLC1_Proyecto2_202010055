@@ -11,6 +11,7 @@ function App() {
     editorRef.current = editor; 
   }
 
+
   function enviar() {
   
     var command = editorRef.current.getValue()
@@ -58,9 +59,9 @@ function App() {
               height="70vh"
               onMount={handleEditorDidMount}
               className={'rounded-xl'}
-              theme="vs-dark"
+              theme= "vs-dark"
             />
-
+            
           </div>
           <div class='column'>
               <textarea class="textarea" id = "terminal" readOnly={true}></textarea>
