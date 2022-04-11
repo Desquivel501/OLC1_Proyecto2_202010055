@@ -2,6 +2,7 @@
 import { Console } from "console";
 import express from "express";
 import { Ambito } from "./interpreter/Misc/Ambito";
+import { Program } from "./interpreter/Misc/Program";
 
 const parser = require("./interpreter/grammar/grammar.js")
 var bodyParser = require('body-parser')
@@ -32,21 +33,22 @@ app.get('/',function(req,res){
     console.log(result)
     var consola = "";
     try{
+      Program.consola = "";
       const ambito = new Ambito(null)
       for(const inst of result){
-        const cadenaActual = inst.execute(ambito);
-        if( cadenaActual != undefined){
-          consola += cadenaActual;
-        }
+        inst.execute(ambito);
+        // if( cadenaActual != undefined){
+        //   consola += cadenaActual;
+        // }
       }
     }catch(error){
         // console.log(error)
-        consola += error.getError()
+        Program.consola += error.getError()
     }
-    console.log(consola)
+    console.log(Program.consola)
 
     const jsonData = {
-      "res": String(consola),
+      "res": String(Program.consola),
       "obj": result
     }
 

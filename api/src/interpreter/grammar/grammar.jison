@@ -8,6 +8,10 @@
     const {Print} = require('../Instruccion/Print')
     const {Acceso} = require('../Expresion/Acceso')
     const {Type} = require('../Expresion/Retorno')
+    const {If} = require("../Instruccion/If")
+    const {Statement} = require("../Instruccion/Statement")
+    const {Switch} = require("../Instruccion/Switch")
+    const {Case} = require("../Instruccion/Case")
 
 %}
 
@@ -20,7 +24,7 @@
 "//".*                                  // comentario simple línea
 [/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]     // comentario multiple líneas
 
-"Println"                                     return 'TK_PRINTLN'; 
+"Println"                                   return 'TK_PRINTLN'; 
 "Print"                                     return 'TK_PRINT'; 
 "true"                                      return 'TK_TRUE'; 
 "false"                                     return 'TK_FALSE'; 
@@ -29,7 +33,12 @@
 "char"                                      return 'TK_CHAR'; 
 "boolean"                                   return 'TK_BOOLEAN'; 
 "doble"                                     return 'TK_DOBLE'; 
-
+"if"                                        return 'TK_IF';
+"else"                                      return 'TK_ELSE';
+"switch"                                    return 'TK_SWITCH';
+"case"                                      return 'TK_CASE';
+"default"                                   return 'TK_DEFAULT';
+"break"                                     return 'TK_BREAK';
 
 
 
@@ -79,7 +88,6 @@
 
 %left 'TK_OR'
 %left 'TK_AND'
-%right 'TK_NOT'
 %left 'TK_MENOR' 'TK_MAYOR' 'TK_MENORIG' 'TK_MAYORIG' 'TK_DOBLEIG' 'TK_NOIG'
 %left 'TK_MODULO'
 %left 'TK_SUMA' 'TK_RESTA'
@@ -88,6 +96,7 @@
 %left CASTEO
 %left TERNARIO
 %left UMENOS
+%right 'TK_NOT'
 
 
 %start ini
@@ -108,7 +117,48 @@ instruccion
     : declaracion
     | print
     | unaria
+    | if
+    | switch
     ;
+
+if
+    : TK_IF TK_PARIZQ expresion TK_PARDER statement else            {$$ = new If($3, $5, $6, @1.first_line, @1.first_column)}
+    ;
+
+else
+    : TK_ELSE statement                                             {$$ = $2}
+    | TK_ELSE if                                                    {$$ = $2}
+    |                                                               {$$ = null}
+    ;
+
+statement
+    : TK_LLAVIZQ instrucciones TK_LLAVDER                           {$$ = new Statement($2, @1.first_line, @1.first_column)}
+    | TK_LLAVIZQ TK_LLAVDER                                         {$$ = new Statement([], @1.first_line, @1.first_column)}
+    ;
+
+
+switch
+    : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list default TK_LLAVDER   {$$ = new Switch($3, $6, $7, @1.first_line, @1.first_column)}
+    | TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list TK_LLAVDER           {$$ = new Switch($3, $6, null, @1.first_line, @1.first_column)}
+    | TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ default TK_LLAVDER             {$$ = new Switch($3, null, $7, @1.first_line, @1.first_column)}
+    // : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list TK_LLAVDER           {$$ = new Switch($3, $6, null, @1.first_line, @1.first_column)}
+    // : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list default TK_LLAVDER   {$$ = new Switch($3, $6, $7, @1.first_line, @1.first_column)}
+    ;
+
+case_list
+    : case_list case                                                 { $1.push($2); $$ = $1; }
+    | case                                                          { $$ = [$1]; }
+    ;
+
+case
+    : TK_CASE expresion TK_DOSPTS instrucciones                     {$$ = new Case($2, new Statement($4, @1.first_line, @1.first_column), @1.first_line, @1.first_column)} 
+    | TK_CASE expresion TK_DOSPTS                                   {$$ = new Case($2, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}                           
+    ;
+
+default
+    : TK_DEFAULT TK_DOSPTS instrucciones                          {$$ = new Statement($3, @1.first_line, @1.first_column)}
+    ;
+
 
 
 declaracion
