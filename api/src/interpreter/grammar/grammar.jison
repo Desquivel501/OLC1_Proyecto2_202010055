@@ -12,6 +12,13 @@
     const {Statement} = require("../Instruccion/Statement")
     const {Switch} = require("../Instruccion/Switch")
     const {Case} = require("../Instruccion/Case")
+    const {Break} = require("../Instruccion/Break")
+    const {While} = require("../Instruccion/While")
+    const {Continue} = require("../Instruccion/Continue")
+    const { Program }= require( "../Misc/Program")
+    const {DoWhile} = require("../Instruccion/DoWhile")
+    const {ToUpper} = require("../Instruccion/ToUpper")
+    const {ToLower} = require("../Instruccion/ToLower")
 
 %}
 
@@ -39,6 +46,13 @@
 "case"                                      return 'TK_CASE';
 "default"                                   return 'TK_DEFAULT';
 "break"                                     return 'TK_BREAK';
+"while"                                     return 'TK_WHILE';
+"continue"                                  return 'TK_CONTINUE';
+"do"                                        return 'TK_DO';
+"for"                                       return 'TK_FOR';
+
+"toLower"                                        return 'TK_LOWER';
+"toUpper"                                        return 'TK_UPPER';
 
 
 
@@ -81,7 +95,7 @@
 
 
 
-. 					                        { console.error('Error Lexico: ' + yytext + ' (Linea: ' + yylloc.first_line + ', Columna: ' + yylloc.first_column +")"); }            
+. 					                        { Program.consola += "Error Lexico - El carecter '" + yytext + "' no pertenece al lenguaje (Linea " + yylloc.first_line + "; Columna " + yylloc.first_column + ")" }
 <<EOF>>                                     return 'EOF';
 
 /lex
@@ -115,11 +129,15 @@ instrucciones
 
 instruccion
     : declaracion
+    | asignacion
     | print
     | unaria
     | if
     | switch
-    ;
+    | while
+    | do_while
+    | TK_BREAK TK_PTCOMA                                            {$$ = new Break(@1.first_line, @1.first_column)}
+    ;   
 
 if
     : TK_IF TK_PARIZQ expresion TK_PARDER statement else            {$$ = new If($3, $5, $6, @1.first_line, @1.first_column)}
@@ -141,8 +159,6 @@ switch
     : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list default TK_LLAVDER   {$$ = new Switch($3, $6, $7, @1.first_line, @1.first_column)}
     | TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list TK_LLAVDER           {$$ = new Switch($3, $6, null, @1.first_line, @1.first_column)}
     | TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ default TK_LLAVDER             {$$ = new Switch($3, null, $7, @1.first_line, @1.first_column)}
-    // : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list TK_LLAVDER           {$$ = new Switch($3, $6, null, @1.first_line, @1.first_column)}
-    // : TK_SWITCH TK_PARIZQ expresion TK_PARDER TK_LLAVIZQ case_list default TK_LLAVDER   {$$ = new Switch($3, $6, $7, @1.first_line, @1.first_column)}
     ;
 
 case_list
@@ -158,6 +174,33 @@ case
 default
     : TK_DEFAULT TK_DOSPTS instrucciones                          {$$ = new Statement($3, @1.first_line, @1.first_column)}
     ;
+
+while
+    : TK_WHILE TK_PARIZQ condicion TK_PARDER TK_LLAVIZQ instrucciones TK_LLAVDER    {$$ = new While($3, new Statement($6, @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    | TK_WHILE TK_PARIZQ condicion TK_PARDER TK_LLAVIZQ TK_LLAVDER                  {$$ = new While($3, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    ;
+
+do_while
+    : TK_DO TK_LLAVIZQ instrucciones TK_LLAVDER TK_WHILE TK_PARIZQ condicion TK_PARDER    {$$ = new While($7, new Statement($3, @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    | TK_DO TK_LLAVIZQ TK_LLAVDER TK_WHILE TK_PARIZQ condicion TK_PARDER                  {$$ = new While($7, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    ;
+
+for
+    : TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA actualizacion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    | TK_FOR TK_PARIZQ asignacion condicion TK_PTCOMA actualizacion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    // : TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA IDENTIFICADOR TK_IGUAL expresion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    // | TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA unaria TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+
+    // | TK_FOR TK_PARIZQ IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA IDENTIFICADOR TK_IGUAL expresion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    // | TK_FOR TK_PARIZQ IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA unaria TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    ;
+
+actualizacion
+    : IDENTIFICADOR TK_SUMA TK_SUMA         
+    | IDENTIFICADOR TK_RESTA TK_RESTA 
+    | IDENTIFICADOR TK_IGUAL expresion
+    ;
+
 
 
 
@@ -179,14 +222,23 @@ declaracion
     | TK_CHAR  listaIdentificador TK_PTCOMA                          {$$ = new Declaracion(Type.CHAR, $2, null, true, @1.first_line, @1.first_column)}
     | TK_STRING listaIdentificador TK_PTCOMA                         {$$ = new Declaracion(Type.STRING, $2, null, true, @1.first_line, @1.first_column)}
     | TK_BOOLEAN listaIdentificador TK_PTCOMA                        {$$ = new Declaracion(Type.BOOLEAN, $2, null, true, @1.first_line, @1.first_column)}
-
-    | IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA                     {$$ = new Declaracion(-1, [$1], $3, false,@1.first_line, @1.first_column)}
     ;   
-    
+
+asignacion
+    : IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA                     {$$ = new Declaracion(-1, [$1], $3, false,@1.first_line, @1.first_column)}
+    ;   
 
 print
-    :TK_PRINT TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,false, @1.first_line, @1.first_column)}
+    : TK_PRINT TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,false, @1.first_line, @1.first_column)}
     | TK_PRINTLN TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,true, @1.first_line, @1.first_column)}
+    ;
+
+to_lower
+    : TK_LOWER TK_PARIZQ expresion TK_PARDER               {$$ = new ToLower($3, @1.first_line, @1.first_column)}
+    ;
+
+to_upper
+    : TK_UPPER TK_PARIZQ expresion TK_PARDER               {$$ = new ToUpper($3, @1.first_line, @1.first_column)}
     ;
 
 listaExpresion
@@ -212,15 +264,7 @@ expresion
     | expresion TK_SUMA TK_SUMA                   {$$ = new Aritmetica($1, $1, TipoAritmetico.INCRE, @1.first_line,  @1.first_column)}
     | expresion TK_RESTA TK_RESTA                 {$$ = new Aritmetica($1, $1, TipoAritmetico.DECRE, @1.first_line,  @1.first_column)}
 
-    | expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
-    | expresion TK_MAYOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
-    | expresion TK_MENORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MENOR_IGUAL, @1.first_line,  @1.first_column)}
-    | expresion TK_MAYORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MAYOR_IGUAL, @1.first_line,  @1.first_column)}
-    | expresion TK_DOBLEIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.IGUAL_IGUAL, @1.first_line,  @1.first_column)}
-    | expresion TK_NOIG expresion                 {$$ = new Relacional($1, $3, TipoRelacional.DIFERENTE, @1.first_line,  @1.first_column)}
-    | TK_NOT expresion                             {$$ = new Relacional($2, $2, TipoRelacional.NOT, @1.first_line,  @1.first_column)}
-    | expresion TK_OR expresion                   {$$ = new Relacional($1, $3, TipoRelacional.OR, @1.first_line,  @1.first_column)}
-    | expresion TK_AND expresion                  {$$ = new Relacional($1, $3, TipoRelacional.AND, @1.first_line,  @1.first_column)}
+    | condicion
 
     | ENTERO                                        {$$ = new Literal($1, TipoLiteral.NUMBER, @1.first_line,  @1.first_column)}
     | DECIMAL                                       {$$ = new Literal($1, TipoLiteral.DOBLE, @1.first_line,  @1.first_column)}
@@ -235,7 +279,22 @@ expresion
     | TK_PARIZQ TK_DOBLE TK_PARDER expresion  %prec CASTEO          {$$ = new Casteo(Type.DOBLE,$4,@1.first_line, @1.first_column)}
     | TK_PARIZQ TK_CHAR TK_PARDER expresion   %prec CASTEO         {$$ = new Casteo(Type.CHAR,$4,@1.first_line, @1.first_column)}
 
+    | to_lower
+    | to_upper
     ;
+
+condicion
+    : expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
+    | expresion TK_MAYOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
+    | expresion TK_MENORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MENOR_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_MAYORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MAYOR_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_DOBLEIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.IGUAL_IGUAL, @1.first_line,  @1.first_column)}
+    | expresion TK_NOIG expresion                 {$$ = new Relacional($1, $3, TipoRelacional.DIFERENTE, @1.first_line,  @1.first_column)}
+    | TK_NOT expresion                             {$$ = new Relacional($2, $2, TipoRelacional.NOT, @1.first_line,  @1.first_column)}
+    | expresion TK_OR expresion                   {$$ = new Relacional($1, $3, TipoRelacional.OR, @1.first_line,  @1.first_column)}
+    | expresion TK_AND expresion                  {$$ = new Relacional($1, $3, TipoRelacional.AND, @1.first_line,  @1.first_column)}
+    ;
+
 
 ternario
     : expresion TK_INTE expresion TK_DOSPTS expresion  %prec TERNARIO {$$ = new Ternario($1, $3, $5, @1.first_line,  @1.first_column)}

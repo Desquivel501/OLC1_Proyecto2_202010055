@@ -10,16 +10,25 @@ export class Switch extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
-        const valor = this.condicion.execute(ambito);
+        var found_break = false;
+        const condicion = this.condicion.execute(ambito);
         if(this.Case != null){
             for(const cas of this.Case){
                 const val_case = cas.condicion.execute(ambito)
-                if(val_case.value == valor.value){
-                    cas.cuerpo.execute(ambito);
+
+                if(val_case.value == condicion.value){
+                    const res = cas.cuerpo.execute(ambito);
+                    if (res != null && res != undefined) {
+                        if (res.type == 'Break') {
+                            found_break = true;
+                            break
+                        }
+                    }
                 }
+                
             }
         }
-        if(this.Default != null){
+        if(this.Default != null && !found_break){
             this.Default.execute(ambito);
         }
     }   
