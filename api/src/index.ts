@@ -5,7 +5,7 @@ import { Ambito } from "./interpreter/Misc/Ambito";
 import { Program } from "./interpreter/Misc/Program";
 
 const parser = require("./interpreter/grammar/grammar.js")
-let bodyParser = require('body-parser')
+const bodyParser = require('body-parser')
 const app = express();
 const port = 5000; // default port to listen
 const path = require('path');

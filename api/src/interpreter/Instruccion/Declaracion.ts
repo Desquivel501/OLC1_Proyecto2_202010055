@@ -31,7 +31,7 @@ export class Declaracion extends Instruccion{
                 }
             }
         }else{
-            
+
             for(const id of this.ids){
                 if(ambito.getVal(id) != null){
                     const val = this.value.execute(ambito)

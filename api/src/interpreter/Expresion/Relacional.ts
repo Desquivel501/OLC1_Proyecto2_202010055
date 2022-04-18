@@ -10,9 +10,9 @@ export class Relacional extends Expresion{
     }
 
     public execute(ambito:Ambito): Retorno {
-        let leftValue = this.left.execute(ambito);
-        let rightValue = this.right.execute(ambito);
-        const tipoR = this.tipoRelacional(leftValue.type, rightValue.type) 
+        const leftValue = this.left.execute(ambito);
+        const rightValue = this.right.execute(ambito);
+        const tipoR = this.tipoRelacional(leftValue.type, rightValue.type)
 
         if(this.tipo == TipoRelacional.NOT){
             if(leftValue.type == Type.BOOLEAN){
@@ -32,7 +32,7 @@ export class Relacional extends Expresion{
             leftValue.value = leftValue.value.toString().charCodeAt(0)
             rightValue.value = rightValue.value.toString().charCodeAt(0)
         }
-        
+
 
         if(tipoR == 1){
             switch(this.tipo){
@@ -60,7 +60,7 @@ export class Relacional extends Expresion{
                     }else{
                         return{value:(false), type: Type.BOOLEAN}
                     }
-                    
+
                 }
                 case TipoRelacional.OR:{
                     if(leftValue.value == true || rightValue.value == true){
@@ -68,13 +68,13 @@ export class Relacional extends Expresion{
                     }else{
                         return{value:(false), type: Type.BOOLEAN}
                     }
-                    
+
                 }
             }
         }else{
             throw new Error_(this.linea, this.columna, "Semantico", "No se puede realizar operacion relacional entre " + Type[leftValue.type] + " y " + Type[rightValue.type]);
         }
-        
+
     }
 }
 
@@ -86,6 +86,6 @@ export enum TipoRelacional{
     MAYOR_IGUAL,
     MENOR_IGUAL,
     NOT,
-    AND, 
+    AND,
     OR
 }

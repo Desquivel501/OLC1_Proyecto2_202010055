@@ -10,9 +10,9 @@ export class Ternario extends Expresion{
     }
 
     public execute(ambito:Ambito): Retorno {
-        let leftValue = this.left.execute(ambito);
-        let rightValue = this.right.execute(ambito);
-        let condicionValue = this.condicion.execute(ambito);
+        const leftValue = this.left.execute(ambito);
+        const rightValue = this.right.execute(ambito);
+        const condicionValue = this.condicion.execute(ambito);
 
         console.log(condicionValue.value);
         if(condicionValue.value){

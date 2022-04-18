@@ -9,7 +9,7 @@ export class Print extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
-        var cadena = "";
+        let cadena = "";
         for (const value of this.values) {
             const val = value.execute(ambito)
             if(this.newLine){

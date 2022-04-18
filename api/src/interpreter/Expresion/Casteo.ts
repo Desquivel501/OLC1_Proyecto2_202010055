@@ -10,7 +10,7 @@ export class Casteo extends Expresion{
     }
 
     public execute(ambito:Ambito): Retorno {
-        let valorActual = this.valor.execute(ambito);
+        const valorActual = this.valor.execute(ambito);
         const casteo = this.casteoValido(valorActual.type, this.nuevoTipo);
         if(casteo == 1){
             switch(valorActual.type){
@@ -51,7 +51,7 @@ export class Casteo extends Expresion{
         }else{
             throw new Error_(this.linea, this.columna, "Semantico", "No se puede castear de " + Type[valorActual.type] + " a " + Type[this.nuevoTipo]);
         }
-        
+
     }
 
 }

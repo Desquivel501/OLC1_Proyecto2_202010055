@@ -10,7 +10,7 @@ export class Switch extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
-        var found_break = false;
+        let found_break = false;
         const condicion = this.condicion.execute(ambito);
         if(this.Case != null){
             for(const cas of this.Case){
@@ -25,11 +25,11 @@ export class Switch extends Instruccion{
                         }
                     }
                 }
-                
+
             }
         }
         if(this.Default != null && !found_break){
             this.Default.execute(ambito);
         }
-    }   
+    }
 }

@@ -11,7 +11,7 @@ export class While extends Instruccion{
 
     public execute(ambito: Ambito) {
 
-        var condicion = this.condicion.execute(ambito);
+        let condicion = this.condicion.execute(ambito);
 
         if(condicion.type != Type.BOOLEAN){
             throw new Error_(this.linea, this.columna, "Semantico", "La condicion de un While debe ser de tipo BOOLEAN");
@@ -30,5 +30,5 @@ export class While extends Instruccion{
                 condicion = this.condicion.execute(ambito);
             }
         }
-    }   
+    }
 }

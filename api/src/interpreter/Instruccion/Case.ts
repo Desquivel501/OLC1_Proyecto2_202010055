@@ -5,5 +5,5 @@ export class Case extends Instruccion{
     constructor(public condicion, public cuerpo:Instruccion, linea, columna){
         super(linea, columna)
     }
-    public execute(ambito: Ambito) {}   
+    public execute(ambito: Ambito) {}
 }

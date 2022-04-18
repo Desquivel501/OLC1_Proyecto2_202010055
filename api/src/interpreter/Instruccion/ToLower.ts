@@ -10,10 +10,10 @@ export class ToLower extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
-    
-        let valorActual = this.value.execute(ambito);
+
+        const valorActual = this.value.execute(ambito);
         if(valorActual.type == Type.STRING){
-            var cadena = valorActual.value;
+            const cadena = valorActual.value;
             return {value: cadena.toLowerCase() , type: Type.STRING}
         }else{
             throw new Error_(this.linea, this.columna, "Semantico", "El valor de la funcion toLower() debe ser de tipo STRING");

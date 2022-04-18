@@ -19,6 +19,7 @@
     const {DoWhile} = require("../Instruccion/DoWhile")
     const {ToUpper} = require("../Instruccion/ToUpper")
     const {ToLower} = require("../Instruccion/ToLower")
+    const {For} = require("../Instruccion/For")
 
 %}
 
@@ -135,6 +136,7 @@ instruccion
     | if
     | switch
     | while
+    | for
     | do_while
     | TK_BREAK TK_PTCOMA                                            {$$ = new Break(@1.first_line, @1.first_column)}
     ;   
@@ -185,9 +187,10 @@ do_while
     | TK_DO TK_LLAVIZQ TK_LLAVDER TK_WHILE TK_PARIZQ condicion TK_PARDER                  {$$ = new While($7, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
     ;
 
+
 for
-    : TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA actualizacion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
-    | TK_FOR TK_PARIZQ asignacion condicion TK_PTCOMA actualizacion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
+    : TK_FOR TK_PARIZQ dec_for condicion TK_PTCOMA actualizacion TK_PARDER statement         {$$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column)}
+    | TK_FOR TK_PARIZQ asignacion condicion TK_PTCOMA actualizacion TK_PARDER statement      {$$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column)}
     // : TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA IDENTIFICADOR TK_IGUAL expresion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
     // | TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA unaria TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
 
@@ -196,12 +199,10 @@ for
     ;
 
 actualizacion
-    : IDENTIFICADOR TK_SUMA TK_SUMA         
-    | IDENTIFICADOR TK_RESTA TK_RESTA 
-    | IDENTIFICADOR TK_IGUAL expresion
+    : IDENTIFICADOR TK_SUMA TK_SUMA                                 {$$ = new Aritmetica(new Acceso($1,@1.first_line, @1.first_column), new Acceso($1,@1.first_line, @1.first_column), TipoAritmetico.INCRE, @1.first_line,  @1.first_column)}
+    | IDENTIFICADOR TK_RESTA TK_RESTA                               {$$ = new Aritmetica(new Acceso($1,@1.first_line, @1.first_column), new Acceso($1,@1.first_line, @1.first_column), TipoAritmetico.DECRE, @1.first_line,  @1.first_column)}
+    | IDENTIFICADOR TK_IGUAL expresion                              {$$ = $3}
     ;
-
-
 
 
 declaracion
@@ -224,9 +225,15 @@ declaracion
     | TK_BOOLEAN listaIdentificador TK_PTCOMA                        {$$ = new Declaracion(Type.BOOLEAN, $2, null, true, @1.first_line, @1.first_column)}
     ;   
 
+
 asignacion
     : IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA                     {$$ = new Declaracion(-1, [$1], $3, false,@1.first_line, @1.first_column)}
     ;   
+
+dec_for
+    : TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion(Type.NUMBER, [$2], $4, true, @1.first_line, @1.first_column)}
+    ;
+
 
 print
     : TK_PRINT TK_PARIZQ listaExpresion TK_PARDER TK_PTCOMA      {$$ = new Print($3,false, @1.first_line, @1.first_column)}

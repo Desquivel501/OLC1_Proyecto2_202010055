@@ -10,10 +10,10 @@ export class ToUpper extends Instruccion{
     }
 
     public execute(ambito: Ambito) {
-    
-        let valorActual = this.value.execute(ambito);
+
+        const valorActual = this.value.execute(ambito);
         if(valorActual.type == Type.STRING){
-            var cadena = valorActual.value;
+            const cadena = valorActual.value;
             return {value: cadena.toUpperCase() , type: Type.STRING}
         }
         else{

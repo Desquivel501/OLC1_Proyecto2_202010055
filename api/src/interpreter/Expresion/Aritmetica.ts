@@ -10,7 +10,7 @@ export class Aritmetica extends Expresion{
     }
 
     public execute(ambito:Ambito): Retorno{
-        
+
         if(this.tipo == TipoAritmetico.INCRE){
             const leftValue = this.left.execute(ambito);
             if(leftValue.type == Type.NUMBER){
@@ -18,7 +18,7 @@ export class Aritmetica extends Expresion{
             }else{
                 throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
             }
-            
+
         }
         if(this.tipo == TipoAritmetico.DECRE){
             const leftValue = this.left.execute(ambito);
@@ -162,7 +162,7 @@ export class Aritmetica extends Expresion{
                     }
                 }
             }
-            
+
         }
 
     }
