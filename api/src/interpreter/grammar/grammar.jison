@@ -20,6 +20,14 @@
     const {ToUpper} = require("../Instruccion/ToUpper")
     const {ToLower} = require("../Instruccion/ToLower")
     const {For} = require("../Instruccion/For")
+    const {Parametro} = require("../Misc/Parametro")
+    const {Return} = require("../Instruccion/Return")
+    const {Funcion} = require("../Instruccion/Funcion")
+    const {Llamada} = require("../Instruccion/Llamada")
+
+    const {DeclararVector1, DeclararVector2} = require("../Instruccion/DeclararVector")
+    const {ModVector1, ModVector2} = require("../Instruccion/ModVector")
+    const {AccesoVector1, AccesoVector2} = require("../Expresion/AccesoVector")
 
 %}
 
@@ -51,9 +59,13 @@
 "continue"                                  return 'TK_CONTINUE';
 "do"                                        return 'TK_DO';
 "for"                                       return 'TK_FOR';
+"return"                                    return 'TK_RETURN';
+"void"                                      return 'TK_VOID';
+"new"                                       return 'TK_NEW';
 
 "toLower"                                        return 'TK_LOWER';
 "toUpper"                                        return 'TK_UPPER';
+
 
 
 
@@ -69,6 +81,8 @@
 ")"                                         return 'TK_PARDER';
 "{"                                         return 'TK_LLAVIZQ';
 "}"                                         return 'TK_LLAVDER';
+"["                                         return 'TK_CORIZQ';
+"]"                                         return 'TK_CORDER';
 ";"                                         return 'TK_PTCOMA';
 ":"                                         return 'TK_DOSPTS'; 
 ","                                         return 'TK_COMA';
@@ -96,7 +110,7 @@
 
 
 
-. 					                        { Program.consola += "Error Lexico - El carecter '" + yytext + "' no pertenece al lenguaje (Linea " + yylloc.first_line + "; Columna " + yylloc.first_column + ")" }
+. 					                        { Program.consola += "Error Lexico - El carecter '" + yytext + "' no pertenece al lenguaje (Linea " + yylloc.first_line + "; Columna " + yylloc.first_column + ")\n" }
 <<EOF>>                                     return 'EOF';
 
 /lex
@@ -138,7 +152,15 @@ instruccion
     | while
     | for
     | do_while
+    | funcion
+    | metodo
     | TK_BREAK TK_PTCOMA                                            {$$ = new Break(@1.first_line, @1.first_column)}
+    | return
+    | llamada TK_PTCOMA
+    | vector_1
+    | mod_vector1
+    | vector_2
+    | mod_vector2
     ;   
 
 if
@@ -165,7 +187,7 @@ switch
 
 case_list
     : case_list case                                                 { $1.push($2); $$ = $1; }
-    | case                                                          { $$ = [$1]; }
+    | case                                                           { $$ = [$1]; }
     ;
 
 case
@@ -191,11 +213,6 @@ do_while
 for
     : TK_FOR TK_PARIZQ dec_for condicion TK_PTCOMA actualizacion TK_PARDER statement         {$$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column)}
     | TK_FOR TK_PARIZQ asignacion condicion TK_PTCOMA actualizacion TK_PARDER statement      {$$ = new For($3, $4, $6, $8, @1.first_line, @1.first_column)}
-    // : TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA IDENTIFICADOR TK_IGUAL expresion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
-    // | TK_FOR TK_PARIZQ TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA unaria TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
-
-    // | TK_FOR TK_PARIZQ IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA IDENTIFICADOR TK_IGUAL expresion TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
-    // | TK_FOR TK_PARIZQ IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA condicion TK_PTCOMA unaria TK_LLAVDER TK_LLAVIZQ instrucciones TK_LLAVDER
     ;
 
 actualizacion
@@ -205,25 +222,12 @@ actualizacion
     ;
 
 
+
 declaracion
-    : TK_INT listaIdentificador TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion(Type.NUMBER, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_DOBLE  listaIdentificador TK_IGUAL expresion TK_PTCOMA      {$$ = new Declaracion(Type.DOBLE, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_CHAR  listaIdentificador TK_IGUAL expresion TK_PTCOMA       {$$ = new Declaracion(Type.CHAR, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_STRING listaIdentificador TK_IGUAL expresion TK_PTCOMA      {$$ = new Declaracion(Type.STRING, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_BOOLEAN listaIdentificador TK_IGUAL expresion TK_PTCOMA     {$$ = new Declaracion(Type.BOOLEAN, $2, $4, true, @1.first_line, @1.first_column)}
-
-    | TK_INT listaIdentificador TK_IGUAL ternario TK_PTCOMA         {$$ = new Declaracion(Type.NUMBER, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_DOBLE  listaIdentificador TK_IGUAL ternario TK_PTCOMA      {$$ = new Declaracion(Type.DOBLE, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_CHAR  listaIdentificador TK_IGUAL ternario TK_PTCOMA       {$$ = new Declaracion(Type.CHAR, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_STRING listaIdentificador TK_IGUAL ternario TK_PTCOMA      {$$ = new Declaracion(Type.STRING, $2, $4, true, @1.first_line, @1.first_column)}
-    | TK_BOOLEAN listaIdentificador TK_IGUAL ternario TK_PTCOMA     {$$ = new Declaracion(Type.BOOLEAN, $2, $4, true, @1.first_line, @1.first_column)}
-
-    | TK_INT listaIdentificador TK_PTCOMA                            {$$ = new Declaracion(Type.NUMBER, $2, null, true, @1.first_line, @1.first_column)}
-    | TK_DOBLE  listaIdentificador TK_PTCOMA                         {$$ = new Declaracion(Type.DOBLE, $2, null, true, @1.first_line, @1.first_column)}
-    | TK_CHAR  listaIdentificador TK_PTCOMA                          {$$ = new Declaracion(Type.CHAR, $2, null, true, @1.first_line, @1.first_column)}
-    | TK_STRING listaIdentificador TK_PTCOMA                         {$$ = new Declaracion(Type.STRING, $2, null, true, @1.first_line, @1.first_column)}
-    | TK_BOOLEAN listaIdentificador TK_PTCOMA                        {$$ = new Declaracion(Type.BOOLEAN, $2, null, true, @1.first_line, @1.first_column)}
-    ;   
+    : tipo listaIdentificador TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion($1, $2, $4, true, @1.first_line, @1.first_column)}
+    | tipo listaIdentificador TK_IGUAL ternario TK_PTCOMA          {$$ = new Declaracion($1, $2, $4, true, @1.first_line, @1.first_column)}
+    | tipo listaIdentificador TK_PTCOMA                            {$$ = new Declaracion($1, $2, null, true, @1.first_line, @1.first_column)}
+    ;     
 
 
 asignacion
@@ -288,6 +292,10 @@ expresion
 
     | to_lower
     | to_upper
+    | llamada
+
+    | acceso_vector1
+    | acceso_vector2
     ;
 
 condicion
@@ -312,3 +320,70 @@ unaria
     | IDENTIFICADOR TK_RESTA TK_RESTA TK_PTCOMA               {$$ = new Declaracion(-1, [$1], new Aritmetica(new Acceso($1,@1.first_line, @1.first_column), null, TipoAritmetico.DECRE, @1.first_line,  @1.first_column), false, @1.first_line, @1.first_column)}
     ;
 
+
+funcion
+    : IDENTIFICADOR TK_PARIZQ parametros TK_PARDER TK_DOSPTS tipo statement          {$$ = new Funcion($1, $7, $3, $6, @1.first_line, @1.first_column)}  
+    | IDENTIFICADOR TK_PARIZQ TK_PARDER TK_DOSPTS tipo statement                     {$$ = new Funcion($1, $6, [], $5, @1.first_line, @1.first_column)}               
+    ;
+
+metodo
+    : IDENTIFICADOR TK_PARIZQ parametros TK_PARDER TK_DOSPTS TK_VOID statement       {$$ = new Funcion($1, $7, $3, Type.VOID, @1.first_line, @1.first_column)}  
+    | IDENTIFICADOR TK_PARIZQ TK_PARDER TK_DOSPTS TK_VOID statement                  {$$ = new Funcion($1, $6, [], $5, @1.first_line, @1.first_column)}   
+    ;
+
+parametros
+    : parametros TK_COMA tipo IDENTIFICADOR                      {$1.push(new Parametro($3, $4)); $$ = $1;}
+    | tipo IDENTIFICADOR                                         {$$ = [new Parametro($1, $2)]}
+    ;
+
+tipo 
+    : TK_INT                {$$ = Type.NUMBER}
+    | TK_STRING             {$$ = Type.STRING}
+    | TK_DOBLE              {$$ = Type.DOBLE}
+    | TK_BOOLEAN            {$$ = Type.BOOLEAN}
+    | TK_CHAR               {$$ = Type.CHAR}
+    ;
+
+return
+    : TK_RETURN expresion TK_PTCOMA                             {$$ = new Return($2, @1.first_line, @1.first_column)}         
+    ;
+
+llamada
+    : IDENTIFICADOR  TK_PARIZQ listaExpresion TK_PARDER                 {$$ = new Llamada($1, $3, @1.first_line, @1.first_column)}  
+    | IDENTIFICADOR  TK_PARIZQ TK_PARDER                                {$$ = new Llamada($1, [], @1.first_line, @1.first_column)}  
+    ;         
+
+
+
+vector_1
+    : tipo IDENTIFICADOR TK_CORIZQ TK_CORDER TK_IGUAL TK_CORIZQ listaExpresion TK_CORDER TK_PTCOMA                   {$$ = new DeclararVector1($1, $1, $2, $7,new Literal("-999", TipoLiteral.NUMBER, @1.first_line,  @1.first_column) , @1.first_line, @1.first_column)}
+    | tipo IDENTIFICADOR TK_CORIZQ TK_CORDER TK_IGUAL TK_NEW tipo TK_CORIZQ expresion TK_CORDER TK_PTCOMA            {$$ = new DeclararVector1($1, $7, $2, [], $9, @1.first_line, @1.first_column)}
+    ;
+
+acceso_vector1
+    : IDENTIFICADOR TK_CORIZQ expresion TK_CORDER                                                                     {$$= new AccesoVector1($1,$3,@1.first_line, @1.first_column)}
+    ;
+
+mod_vector1
+    : IDENTIFICADOR TK_CORIZQ expresion TK_CORDER TK_IGUAL expresion TK_PTCOMA                                        {$$= new ModVector1($1,$3,$6,@1.first_line, @1.first_column)}
+    ;
+
+
+
+vector_2
+    : tipo IDENTIFICADOR TK_CORIZQ TK_CORDER TK_CORIZQ TK_CORDER TK_IGUAL TK_CORIZQ lista_vector TK_CORDER TK_PTCOMA                                   {$$ = new DeclararVector2($1, $1, $2, $9,new Literal("-999", TipoLiteral.NUMBER, @1.first_line,  @1.first_column), new Literal("-999", TipoLiteral.NUMBER, @1.first_line,  @1.first_column) , @1.first_line, @1.first_column)}
+    | tipo IDENTIFICADOR TK_CORIZQ TK_CORDER TK_CORIZQ TK_CORDER TK_IGUAL TK_NEW tipo TK_CORIZQ expresion TK_CORDER TK_CORIZQ expresion TK_CORDER TK_PTCOMA         {$$ = new DeclararVector2($1, $9, $2, [], $11, $14, @1.first_line, @1.first_column)}
+    ;
+
+acceso_vector2
+    : IDENTIFICADOR TK_CORIZQ expresion TK_CORDER TK_CORIZQ expresion TK_CORDER                                                 {$$= new AccesoVector2($1,$3,$6,@1.first_line, @1.first_column)}
+    ;                                   
+
+mod_vector2
+    : IDENTIFICADOR TK_CORIZQ expresion TK_CORDER TK_CORIZQ expresion TK_CORDER TK_IGUAL expresion TK_PTCOMA                    {$$= new ModVector2($1,$3,$6,$9,@1.first_line, @1.first_column)}
+    ;
+
+lista_vector
+    : lista_vector TK_COMA TK_CORIZQ listaExpresion TK_CORDER                                   {$1.push($4); $$ = $1;}
+    | TK_CORIZQ listaExpresion TK_CORDER                                                        {$$ = [$2]}   
+    ;

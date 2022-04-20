@@ -1,6 +1,5 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
-import { Case } from "./Case";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 
@@ -25,6 +24,8 @@ export class While extends Instruccion{
                         break
                     }else if(res.type == "Continue"){
                         continue
+                    }else if(res.type == "Return"){
+                        return res;
                     }
                 }
                 condicion = this.condicion.execute(ambito);

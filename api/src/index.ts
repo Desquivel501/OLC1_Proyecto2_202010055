@@ -36,9 +36,6 @@ app.get('/',function(req,res){
       const ambito = new Ambito(null)
       for(const inst of result){
         inst.execute(ambito);
-        // if( cadenaActual != undefined){
-        //   consola += cadenaActual;
-        // }
       }
     }catch(error){
         console.log(error)

@@ -3,7 +3,9 @@ export enum Type{
     DOBLE,
     BOOLEAN,
     CHAR,
-    STRING
+    STRING, 
+    VOID, 
+    VECTOR
 }
 
 export type Retorno = {

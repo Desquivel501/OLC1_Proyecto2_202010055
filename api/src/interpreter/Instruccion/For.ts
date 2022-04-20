@@ -1,6 +1,5 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
-import { Case } from "./Case";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 
@@ -28,13 +27,13 @@ export class For extends Instruccion{
                         break
                     }else if(res.type == "Continue"){
                         continue
+                    }else if(res.type == "Return"){
+                        return res;
                     }
                 }
 
                 const nuevoVal = this.actualizacion.execute(newAmbito)
-
                 newAmbito.setVal(variableID, nuevoVal.value, nuevoVal.type, this.linea, this.columna)
-
                 condicion = this.condicion.execute(newAmbito);
             }
         }

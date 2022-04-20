@@ -25,6 +25,8 @@ export class DoWhile extends Instruccion{
                         break
                     }else if(res.type == "Continue"){
                         continue
+                    }else if(res.type == "Return"){
+                        return res;
                     }
                 }
                 condicion = this.condicion.execute(ambito);
