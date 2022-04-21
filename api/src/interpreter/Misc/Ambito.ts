@@ -193,6 +193,28 @@ export class Ambito{
         }
         return null
     }
+    
+    public getVector2_2(id:string, index:number):Vector2{
+        let env: Ambito | null = this;
+
+        while(env != null){
+            if(env.vectores2.has(id)){
+                return env.vectores2.get(id);
+            }
+            env = env.anterior
+        }
+        return null
+    }
+
+    public tipoVector(id:string):Number{
+        let res1 = this.getVector1(id)
+        if(res1 != null) return 1
+        let res2 = this.getVector2(id)
+        if(res2 != null) return 2
+        return 0
+    }
+
+
 
 
 

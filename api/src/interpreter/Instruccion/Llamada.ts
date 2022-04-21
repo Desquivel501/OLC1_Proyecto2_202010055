@@ -6,11 +6,16 @@ import { Type } from "../Expresion/Retorno";
 import { Expresion } from "../Expresion/Expresion";
 
 export class Llamada extends Instruccion{
-    constructor(public id, private listaExpresiones: Array<Expresion> , linea, columna){
+    constructor(public id, private listaExpresiones: Array<Expresion> , private main: boolean, linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
+
+        if(!this.main){
+            return
+        }
+
         const funcion = ambito.getFuncion(this.id);
         if(funcion == null){
             throw new Error_(this.linea, this.columna, 'Semantico', 'La funcion "' + this.id + '" no se ha encontrado');

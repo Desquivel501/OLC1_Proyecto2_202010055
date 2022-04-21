@@ -38,9 +38,9 @@ export class Casteo extends Expresion{
 
                 case Type.CHAR:{
                     if(this.nuevoTipo == Type.NUMBER){
-                        return{value:(valorActual.value.toString().fromCharCodeAt(0)), type: Type.NUMBER}
+                        return{value:(valorActual.value.toString().charCodeAt(0)), type: Type.NUMBER}
                     }else if(this.nuevoTipo == Type.DOBLE){
-                        return{value:(valorActual.value.toString().fromCharCodeAt(0)), type: Type.DOBLE}
+                        return{value:(valorActual.value.toString().charCodeAt(0)), type: Type.DOBLE}
                     }else if(this.nuevoTipo == Type.CHAR){
                         return{value:(valorActual.value), type: Type.CHAR}
                     }else{

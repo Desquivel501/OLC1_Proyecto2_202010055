@@ -19,6 +19,8 @@
     const {DoWhile} = require("../Instruccion/DoWhile")
     const {ToUpper} = require("../Instruccion/ToUpper")
     const {ToLower} = require("../Instruccion/ToLower")
+    const {Length} = require("../Instruccion/Length")
+    const {TypeOf} = require("../Instruccion/TypeOf")
     const {For} = require("../Instruccion/For")
     const {Parametro} = require("../Misc/Parametro")
     const {Return} = require("../Instruccion/Return")
@@ -62,14 +64,17 @@
 "return"                                    return 'TK_RETURN';
 "void"                                      return 'TK_VOID';
 "new"                                       return 'TK_NEW';
+"run"                                       return 'TK_RUN';
 
-"toLower"                                        return 'TK_LOWER';
-"toUpper"                                        return 'TK_UPPER';
+"toLower"                                   return 'TK_LOWER';
+"toUpper"                                   return 'TK_UPPER';
+"length"                                    return 'TK_LENGTH';
+"TypeOf"                                    return 'TK_TYPE';
 
 
 
 
-\"[^\"]*\"                                  { yytext = yytext.substr(1,yyleng-2); return 'CADENA'; }             
+[\"]([^\\\"\\\n]|\\.)*[\"]                 { yytext = yytext.substr(1,yyleng-2); return 'CADENA'; }             
 \'[^\']\'                                  { yytext = yytext.substr(1,yyleng-2); return 'CHAR'; }  
 
 [0-9]+\.[0-9]+\b                            return 'DECIMAL';
@@ -132,7 +137,7 @@
 
 %%
 
-ini : instrucciones EOF{
+ini : instrucciones_main EOF{
     return $1
 }
 ;
@@ -140,6 +145,11 @@ ini : instrucciones EOF{
 instrucciones
 	: instrucciones instruccion 	{ $1.push($2); $$ = $1; }
 	| instruccion					{ $$ = [$1]; }
+    ;
+
+instrucciones_main
+	: instrucciones_main instruccion_main 	{ $1.push($2); $$ = $1; }
+	| instruccion_main					    { $$ = [$1]; }
     ;
 
 instruccion
@@ -162,6 +172,27 @@ instruccion
     | vector_2
     | mod_vector2
     ;   
+
+instruccion_main
+    : declaracion
+    | asignacion
+    | print
+    | unaria
+    | if
+    | switch
+    | while
+    | for
+    | do_while
+    | funcion
+    | metodo
+    | vector_1
+    | mod_vector1
+    | vector_2
+    | mod_vector2
+    | run TK_PTCOMA
+    | llamada_out TK_PTCOMA
+    ;   
+
 
 if
     : TK_IF TK_PARIZQ expresion TK_PARDER statement else            {$$ = new If($3, $5, $6, @1.first_line, @1.first_column)}
@@ -279,8 +310,6 @@ expresion
 
     | ENTERO                                        {$$ = new Literal($1, TipoLiteral.NUMBER, @1.first_line,  @1.first_column)}
     | DECIMAL                                       {$$ = new Literal($1, TipoLiteral.DOBLE, @1.first_line,  @1.first_column)}
-    | TK_TRUE                                       {$$ = new Literal($1, TipoLiteral.BOOLEAN, @1.first_line,  @1.first_column)}
-    | TK_FALSE                                      {$$ = new Literal($1, TipoLiteral.BOOLEAN, @1.first_line,  @1.first_column)}
     | CADENA                                        {$$ = new Literal($1, TipoLiteral.STRING, @1.first_line,  @1.first_column)}
     | CHAR                                          {$$ = new Literal($1, TipoLiteral.CHAR, @1.first_line,  @1.first_column)}
 
@@ -296,10 +325,15 @@ expresion
 
     | acceso_vector1
     | acceso_vector2
+
+    | length
+    | type
     ;
 
 condicion
-    : expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
+    : TK_TRUE                                       {$$ = new Literal($1, TipoLiteral.BOOLEAN, @1.first_line,  @1.first_column)}
+    | TK_FALSE                                      {$$ = new Literal($1, TipoLiteral.BOOLEAN, @1.first_line,  @1.first_column)}
+    | expresion TK_MENOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MENOR, @1.first_line,  @1.first_column)}
     | expresion TK_MAYOR expresion                {$$ = new Relacional($1, $3, TipoRelacional.MAYOR, @1.first_line,  @1.first_column)}
     | expresion TK_MENORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MENOR_IGUAL, @1.first_line,  @1.first_column)}
     | expresion TK_MAYORIG expresion              {$$ = new Relacional($1, $3, TipoRelacional.MAYOR_IGUAL, @1.first_line,  @1.first_column)}
@@ -309,6 +343,7 @@ condicion
     | expresion TK_OR expresion                   {$$ = new Relacional($1, $3, TipoRelacional.OR, @1.first_line,  @1.first_column)}
     | expresion TK_AND expresion                  {$$ = new Relacional($1, $3, TipoRelacional.AND, @1.first_line,  @1.first_column)}
     ;
+
 
 
 ternario
@@ -328,7 +363,7 @@ funcion
 
 metodo
     : IDENTIFICADOR TK_PARIZQ parametros TK_PARDER TK_DOSPTS TK_VOID statement       {$$ = new Funcion($1, $7, $3, Type.VOID, @1.first_line, @1.first_column)}  
-    | IDENTIFICADOR TK_PARIZQ TK_PARDER TK_DOSPTS TK_VOID statement                  {$$ = new Funcion($1, $6, [], $5, @1.first_line, @1.first_column)}   
+    | IDENTIFICADOR TK_PARIZQ TK_PARDER TK_DOSPTS TK_VOID statement                  {$$ = new Funcion($1, $6, [], Type.VOID, @1.first_line, @1.first_column)}   
     ;
 
 parametros
@@ -349,8 +384,18 @@ return
     ;
 
 llamada
-    : IDENTIFICADOR  TK_PARIZQ listaExpresion TK_PARDER                 {$$ = new Llamada($1, $3, @1.first_line, @1.first_column)}  
+    : IDENTIFICADOR  TK_PARIZQ listaExpresion TK_PARDER                 {$$ = new Llamada($1, $3, true, @1.first_line, @1.first_column)}  
     | IDENTIFICADOR  TK_PARIZQ TK_PARDER                                {$$ = new Llamada($1, [], @1.first_line, @1.first_column)}  
+    ;    
+
+llamada_out
+    : IDENTIFICADOR  TK_PARIZQ listaExpresion TK_PARDER                 {$$ = new Llamada($1, $3, false, @1.first_line, @1.first_column)}  
+    | IDENTIFICADOR  TK_PARIZQ TK_PARDER                                {$$ = new Llamada($1, [], false, @1.first_line, @1.first_column)}  
+    ;    
+
+run
+    : TK_RUN IDENTIFICADOR  TK_PARIZQ listaExpresion TK_PARDER                 {$$ = new Llamada($2, $4, true, @1.first_line, @1.first_column)}  
+    | TK_RUN IDENTIFICADOR  TK_PARIZQ TK_PARDER                                {$$ = new Llamada($2, [], true, @1.first_line, @1.first_column)}  
     ;         
 
 
@@ -386,4 +431,12 @@ mod_vector2
 lista_vector
     : lista_vector TK_COMA TK_CORIZQ listaExpresion TK_CORDER                                   {$1.push($4); $$ = $1;}
     | TK_CORIZQ listaExpresion TK_CORDER                                                        {$$ = [$2]}   
+    ;
+
+length
+    : TK_LENGTH TK_PARIZQ expresion TK_PARDER               {$$ = new Length($3, @1.first_line, @1.first_column)}
+    ;
+
+type
+    : TK_TYPE TK_PARIZQ expresion TK_PARDER               {$$ = new TypeOf($3, @1.first_line, @1.first_column)}
     ;

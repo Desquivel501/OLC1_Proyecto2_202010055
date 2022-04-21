@@ -10,27 +10,39 @@ export class AccesoVector1 extends Expresion{
 
     public execute(ambito: Ambito): Retorno {
         const index = this.index.execute(ambito)
-        const value = ambito.getVector1(this.id)
+        let value = ambito.getVector1(this.id)
 
         if(index.type != Type.NUMBER){
             throw new Error_(this.linea, this.columna, 'Semantico', "Indice no Valido");
         }
-        if(value.largo > index.value ){
+        console.log(ambito.tipoVector(this.id))
+        if(ambito.tipoVector(this.id) == 2){
+            console.log("here");
+            const vec = ambito.getVector2(this.id)
+            console.log()
+
+            return {value: vec.valor[index.value], type: Type.VECTOR, }
+            
+        }else{
             if(value != null){
-                const res = value.valor[index.value]
-                if(res != undefined){
-                    return {value:res, type:value.type}
-                }else{
-                    const def = defaults[value.type]
-                    return {value:def, type:value.type}
-                }
-                
-            } else{
+                if(value.largo > index.value ){
+                    
+                        const res = value.valor[index.value]
+                        if(res != undefined){
+                            return {value:res, type:value.type}
+                        }else{
+                            const def = defaults[value.type]
+                            return {value:def, type:value.type}
+                        }
+                        
+                    }else{
+                        throw new Error_(this.linea, this.columna, 'Semantico', "Indice fuera del rango");
+                    }
+            }else{
                 throw new Error_(this.linea, this.columna, 'Semantico', `No se encuentra la variable "${this.id}"`);
             }
+            
         }
-        throw new Error_(this.linea, this.columna, 'Semantico', "Indice fuera del rango");
-        
     }
 }
 

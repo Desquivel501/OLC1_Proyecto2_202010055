@@ -18,7 +18,11 @@ export class DeclararVector1 extends Instruccion{
         const largo = this.length.execute(ambito)
         console.log(largo)
 
-        if(ambito.getVector1(this.id) != null || ambito.getVal(this.id) != null ){
+        if(ambito.getVal(this.id) != null ){
+            throw new Error_(this.linea, this.columna, 'Semantico', 'El nombre del vector "' + this.id + '" ya esta en uso');
+        }
+
+        if(ambito.tipoVector(this.id) != 0){
             throw new Error_(this.linea, this.columna, 'Semantico', 'El vector "' + this.id + '" ya ha sido declarado');
         }
 
@@ -54,10 +58,26 @@ export class DeclararVector2 extends Instruccion{
         if(this.tipo1 != this.tipo2){
             throw new Error_(this.linea, this.columna, 'Semantico', 'Los tipos del vector no coinciden');
         }
+
+        if(ambito.getVal(this.id) != null ){
+            throw new Error_(this.linea, this.columna, 'Semantico', 'El nombre del vector "' + this.id + '" ya esta en uso');
+        }
+
+        if(ambito.tipoVector(this.id) != 0){
+            throw new Error_(this.linea, this.columna, 'Semantico', 'El vector "' + this.id + '" ya ha sido declarado');
+        }
+
         const largo1 = this.length1.execute(ambito)
         const largo2 = this.length2.execute(ambito)
 
         if(largo1.value == -999){
+
+            for(const val of this.values){
+                if(val.length != this.values[0].length){
+                    throw new Error_(this.linea, this.columna, 'Semantico', 'Largo del vector incorrecto');
+                }
+            }
+
             if(this.values.length > 0 && this.values[0].length > 0){
                 console.log(this.tipo1)
                 ambito.crearVector2(this.id,this.tipo1,this.values.length,this.values[0].length,this.linea,this.columna);
@@ -65,16 +85,7 @@ export class DeclararVector2 extends Instruccion{
                 let i = 0;
                 let j = 0;
                 for (const val_i of this.values) {
-                    if(val_i.length != this.values[0].length){
-                        throw new Error_(this.linea, this.columna, 'Semantico', 'Largo del vector incorrecto');
-                    }
-                    // for(const val_j of val_i){
-                    //     const val = val_j.execute(ambito);
-                    //     console.log(i + "-" + j)
-                    //     console.log(this.id + "-" + val.value + "-" + val.type)
-                    //     ambito.setVector2(this.id, val.value, val.type, i, j, this.linea, this.columna)
-                    //     j++;
-                    // }
+
                     const array = []
                     for(const val_j of val_i){
                         const val = val_j.execute(ambito);
