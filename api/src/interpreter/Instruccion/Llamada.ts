@@ -4,6 +4,7 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Expresion } from "../Expresion/Expresion";
+import { Program } from "../Misc/Program";
 
 export class Llamada extends Instruccion{
     constructor(public id, private listaExpresiones: Array<Expresion> , private main: boolean, linea, columna){
@@ -49,5 +50,30 @@ export class Llamada extends Instruccion{
         }
 
         return {value:null, type: Type.VOID}
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+        
+        let id = Program.NODO;
+        Program.NODO++
+
+        let parametros = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="llamada funcion"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        Program.AST += "Nodo" + id + '[label="' + this.id +'"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + id+ "\n"
+
+        Program.AST += "Nodo" + parametros + '[label="parametros"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + parametros + "\n"
+
+        for(const val of this.listaExpresiones){
+            val.graficar(parametros)
+        }
+
     }
 }

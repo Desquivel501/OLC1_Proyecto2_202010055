@@ -1,6 +1,6 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
-
+import { Program } from "../Misc/Program";
 export class Statement extends Instruccion{
     constructor(private codigo:Instruccion[], linea, columna){
         super(linea, columna)
@@ -16,5 +16,18 @@ export class Statement extends Instruccion{
                 console.log(error)
             }
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="cuerpo"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        for(const inst of this.codigo){
+            inst.graficar(declaracion)
+        }
+
     }
 }

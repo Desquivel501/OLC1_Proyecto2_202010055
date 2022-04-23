@@ -3,6 +3,7 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Type } from "../Expresion/Retorno";
 import { Error_ } from "../Error/Error";
+import { Program } from "../Misc/Program";
 
 export class Length extends Instruccion{
     constructor(private value:Expresion, linea, columna){
@@ -25,5 +26,15 @@ export class Length extends Instruccion{
         else{
             throw new Error_(this.linea, this.columna, "Semantico", "El valor de la funcion length() debe ser de tipo STRING o VECTOR");
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="length"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        this.value.graficar(declaracion);
     }
 }

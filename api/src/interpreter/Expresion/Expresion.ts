@@ -8,6 +8,8 @@ export abstract class Expresion{
 
     public abstract execute(ambito:Ambito): Retorno;
 
+    public abstract graficar(padre:number);
+
     public tipoDominante(tipo1:Type, tipo2:Type){
         return tipos[tipo1][tipo2];
     }

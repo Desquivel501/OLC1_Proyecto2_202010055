@@ -1,8 +1,7 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Case } from "./Case";
-import { Error_ } from "../Error/Error";
-import { Type } from "../Expresion/Retorno";
+import { Program } from "../Misc/Program";
 
 export class Switch extends Instruccion{
     constructor(private condicion, private Case: Case[], private Default: Instruccion, linea, columna){
@@ -31,5 +30,45 @@ export class Switch extends Instruccion{
         if(this.Default != null && !found_break){
             this.Default.execute(ambito);
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+
+        let SWITCH = Program.NODO;
+        Program.NODO++
+
+        let expresion = Program.NODO;
+        Program.NODO++
+
+        let cases = Program.NODO;
+        Program.NODO++
+
+        let Default = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="switch"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        Program.AST += "Nodo" + SWITCH + '[label="switch"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + SWITCH+ "\n"
+
+        Program.AST += "Nodo" + expresion + '[label="expresion"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + expresion+ "\n"
+
+        this.condicion.graficar(expresion)
+        
+        Program.AST += "Nodo" + cases + '[label="cases"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + cases+ "\n"
+
+        for(const val of this.Case){
+            val.graficar(cases)
+        }
+
+        Program.AST += "Nodo" + Default + '[label="default"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + Default+ "\n"
+
+        this.Default.graficar(Default)
     }
 }

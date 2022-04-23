@@ -6,4 +6,5 @@ export abstract class Instruccion{
     }
 
     public abstract execute(ambito:Ambito);
+    public abstract graficar(padre:number);
 }

@@ -43,4 +43,21 @@ export class Print extends Instruccion{
             Program.consola += "\n";
         }
     }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+
+        if(this.newLine){
+            Program.AST += "Nodo" + declaracion + '[label="println"]'+ "\n"
+            Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+        }else{
+            Program.AST += "Nodo" + declaracion + '[label="print"]'+ "\n"
+            Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+        }
+
+        for(const exp of this.values){
+            exp.graficar(declaracion)
+        }
+    }
 }

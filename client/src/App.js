@@ -2,6 +2,12 @@
 import './App.css';
 import Editor from "@monaco-editor/react";
 import { useRef } from 'react';
+// import {graphviz} from "d3-graphviz";
+// import logo from './logo.png';
+// import * as d3                    from 'd3'
+// import * as d3Graphviz            from 'd3-graphviz'
+import { Graphviz } from 'graphviz-react';
+// import { graphviz } from 'd3-graphviz';
 
 function App() {
 
@@ -11,6 +17,12 @@ function App() {
     editorRef.current = editor; 
   }
 
+  let dot = `graph {
+    grandparent -- "parent A";
+    child;
+    "parent B" -- child;
+    grandparent --  "parent B";
+  }`
 
   function enviar() {
   
@@ -29,12 +41,42 @@ function App() {
     .then(response =>{
       console.log(response)
       document.getElementById('terminal').value = response.res
+      
     })
   }
 
-  return (
+  function ast() {
 
+    // graphviz(`#graphviz`).renderDot('digraph {a -> b}');
+
+    var command = editorRef.current.getValue()
+    const jsonData = {
+      "exp": String(command)
+    }
+
+    fetch('http://localhost:5000/ast', {  
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      mode: 'cors', 
+      body: JSON.stringify(jsonData)
+    })
+    .then(res => res.json())
+    .then(response =>{
+      console.log(response)
+
+      // document.getElementById('graphviz').innerHTML = "<Graphviz dot={`" + response.res + "`} />"
+
+      // document.getElementById('terminal').value = response.res
+      dot = response.res
+
+    })
+  }
+
+
+  return (
+    
     <div class="main-div">
+
       <div class="titulo">Editor de texto</div>
 
       <div class='wrapper'>
@@ -74,8 +116,20 @@ function App() {
           <div class='column'>
             <button class="button" onClick={enviar}>Resultado</button>
           </div>
+          <div class='column'>
+            <button class="button" onClick={ast}>Generar AST</button>
+          </div>
+          <div class='column'>
+            <button class="button" >Tabla de Simbolos</button>
+          </div>
         </div>
       </div>
+
+      <div class='wrapper' id="graphviz">
+      <Graphviz classname = "canvas" dot={dot} />
+      </div>
+
+
     </div>
   );
 }

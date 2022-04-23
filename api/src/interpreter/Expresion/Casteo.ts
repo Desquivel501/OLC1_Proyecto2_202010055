@@ -2,6 +2,7 @@ import {Expresion} from "./Expresion";
 import {Retorno, Type} from "./Retorno";
 import { Ambito } from "../Misc/Ambito";
 import { Error_ } from "../Error/Error";
+import { Program } from "../Misc/Program";
 
 export class Casteo extends Expresion{
 
@@ -51,6 +52,24 @@ export class Casteo extends Expresion{
         }else{
             throw new Error_(this.linea, this.columna, "Semantico", "No se puede castear de " + Type[valorActual.type] + " a " + Type[this.nuevoTipo]);
         }
+
+    }
+
+    public graficar(padre: number) {
+        let aritmetica = Program.NODO
+        Program.NODO++
+        
+        let op = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + aritmetica + '[label="Casteo"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + aritmetica+ "\n"
+
+
+        Program.AST += "Nodo" + op + '[label="(' + Type[this.nuevoTipo] + ')"]'+ "\n"
+        Program.AST += "Nodo" + aritmetica + " -> Nodo" + op+ "\n"
+
+        this.valor.graficar(aritmetica)
 
     }
 

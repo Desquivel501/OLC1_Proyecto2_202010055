@@ -3,6 +3,7 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Type } from "../Expresion/Retorno";
 import { Error_ } from "../Error/Error";
+import { Program } from "../Misc/Program";
 
 export class ToUpper extends Instruccion{
     constructor(private value:Expresion, linea, columna){
@@ -19,5 +20,16 @@ export class ToUpper extends Instruccion{
         else{
             throw new Error_(this.linea, this.columna, "Semantico", "El valor de la funcion toUpper() debe ser de tipo STRING");
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+        
+        Program.AST += "Nodo" + declaracion + '[label="toupper"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        this.value.graficar(declaracion);
+
     }
 }

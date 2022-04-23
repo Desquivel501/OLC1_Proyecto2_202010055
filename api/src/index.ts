@@ -52,6 +52,45 @@ app.get('/',function(req,res){
 
   });
 
+  app.post('/ast',cors(), (req,res)=>{
+    res.set('Access-Control-Allow-Origin', '*');
+    const entrada = req.body.exp
+    console.log(entrada)
+    if(entrada == ""){
+      console.log("Entrada Vacia")
+      return res.send("Cadena Vacia")
+    }
+
+    const result = parser.parse(entrada)
+
+    Program.AST += "digraph G{\n"
+    // Program.AST += "node [shape=record];"
+
+    let declaracion = Program.NODO
+    Program.NODO++
+
+    Program.AST += "Nodo" + declaracion + '[label="instruciones"]'+ "\n"
+
+    try{
+      for(const inst of result){
+        inst.graficar(declaracion);
+      }
+    }catch(error){
+        console.log(error)
+        // Program.consola += error.getError()
+    }
+    Program.AST += "}\n"
+    console.log(Program.AST)
+
+    const jsonData = {
+      "res": Program.AST,
+    }
+    Program.AST = ""
+    Program.NODO = 0
+    return res.send(JSON.stringify(jsonData))
+
+  });
+
 
 app.use(express.json())
 app.listen( port, () => {

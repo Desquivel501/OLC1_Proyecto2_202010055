@@ -3,8 +3,7 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import {Type} from "../Expresion/Retorno";
-import { format } from "path";
-import { If } from "./If";
+import { Program } from "../Misc/Program";
 
 export class DeclararVector1 extends Instruccion{
     constructor(private tipo1:Type, private tipo2:Type, private id:string, private values:Expresion[], private length:Expresion, linea, columna){
@@ -44,6 +43,62 @@ export class DeclararVector1 extends Instruccion{
             ambito.crearVector1(this.id, this.tipo1, largo.value , this.linea, this.columna)
         }else{
             throw new Error_(this.linea, this.columna, 'Semantico', 'Largo del vector invalido');
+        }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+        
+        let tipo1 = Program.NODO;
+        Program.NODO++
+
+        let tipo2 = Program.NODO;
+        Program.NODO++
+
+        let igual = Program.NODO;
+        Program.NODO++
+
+        let valor = Program.NODO;
+        Program.NODO++
+
+        let id = Program.NODO;
+        Program.NODO++
+
+        let nuevo = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="declaracion vector"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        Program.AST += "Nodo" + tipo1 + '[label=" ' + Type[this.tipo1] + ' "]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + tipo1+ "\n"
+
+        Program.AST += "Nodo" + id + '[label=" '+this.id +'[]"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + id+ "\n"
+
+        Program.AST += "Nodo" + igual + '[label="="]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + igual+ "\n"
+
+
+        if(this.values.length != 0){
+            Program.AST += "Nodo" + valor + '[label="[lista valores]"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + valor+ "\n"
+
+            for(const val of this.values){
+                val.graficar(valor)
+            }
+        }else{
+            Program.AST += "Nodo" + nuevo + '[label="new"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + nuevo+ "\n"
+
+            Program.AST += "Nodo" + tipo2 + '[label=" ' + Type[this.tipo1] + ' "]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + tipo2+ "\n"
+
+            Program.AST += "Nodo" + valor + '[label="[tamaño]"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + valor+ "\n"
+
+            this.length.graficar(valor)
         }
     }
 }
@@ -106,6 +161,76 @@ export class DeclararVector2 extends Instruccion{
             ambito.crearVector2(this.id, this.tipo1, largo1.value, largo2.value, this.linea, this.columna);
         }else{
             throw new Error_(this.linea, this.columna, 'Semantico', 'Largo del vector invalido');
+        }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+        
+        let tipo1 = Program.NODO;
+        Program.NODO++
+
+        let tipo2 = Program.NODO;
+        Program.NODO++
+
+        let igual = Program.NODO;
+        Program.NODO++
+
+        let valor = Program.NODO;
+        Program.NODO++
+
+        let valor2 = Program.NODO;
+        Program.NODO++
+
+        let id = Program.NODO;
+        Program.NODO++
+
+        let nuevo = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="declaracion vector"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        Program.AST += "Nodo" + tipo1 + '[label=" ' + Type[this.tipo1] + ' "]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + tipo1+ "\n"
+
+        Program.AST += "Nodo" + id + '[label=" '+this.id +'[]"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + id+ "\n"
+
+        Program.AST += "Nodo" + igual + '[label="="]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + igual+ "\n"
+
+
+        if(this.values.length != 0){
+            Program.AST += "Nodo" + valor + '[label="[lista valores]"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + valor+ "\n"
+
+            for(const val of this.values){
+                let lista = Program.NODO;
+                Program.AST += "Nodo" + lista + '[label="[lista valores]"]'+ "\n"
+                Program.AST += "Nodo" + valor + " -> Nodo" + lista+ "\n"
+                for(const lis of val){
+                    lis.graficar(valor)
+                }
+                Program.NODO++
+            }
+        }else{
+            Program.AST += "Nodo" + nuevo + '[label="new"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + nuevo+ "\n"
+
+            Program.AST += "Nodo" + tipo2 + '[label=" ' + Type[this.tipo1] + ' "]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + tipo2+ "\n"
+
+            Program.AST += "Nodo" + valor + '[label="[tamaño]"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + valor+ "\n"
+
+            this.length1.graficar(valor)
+
+            Program.AST += "Nodo" + valor2 + '[label="[tamaño]"]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + valor2+ "\n"
+
+            this.length2.graficar(valor)
         }
     }
 }

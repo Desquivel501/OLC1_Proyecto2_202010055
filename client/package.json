@@ -8,6 +8,9 @@
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
     "cors": "^2.8.5",
+    "d3": "^7.4.4",
+    "d3-graphviz": "^4.1.1",
+    "graphviz-react": "^1.2.0",
     "monaco-themes": "^0.4.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
@@ -15,7 +18,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --max_old_space_size=4096 start",
+    "predeploy": "react-scripts --max_old_space_size=4096 build",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

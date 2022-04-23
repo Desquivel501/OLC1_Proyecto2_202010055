@@ -3,6 +3,7 @@ import { Ambito } from "../Misc/Ambito";
 import { Expresion } from "./Expresion";
 import { Retorno } from "./Retorno";
 import {Type, defaults} from "../Expresion/Retorno";
+import { Program } from "../Misc/Program";
 
 export class Acceso extends Expresion{
     constructor(private id:string, linea:number, columna:number){
@@ -38,5 +39,18 @@ export class Acceso extends Expresion{
         }
 
         throw new Error_(this.linea, this.columna, 'Semantico', `No se encuentra la variable "${this.id}"`);
+    }
+
+    public graficar(padre:number){
+        let acceso = Program.NODO
+        Program.NODO++
+        let id = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + acceso + '[label="Acceso"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"
+
+        Program.AST += "Nodo" + id + '[label="' +  this.id +  '"]'+ "\n"
+        Program.AST += "Nodo" + acceso + " -> Nodo" + id+ "\n"
     }
 }

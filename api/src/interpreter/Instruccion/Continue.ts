@@ -1,5 +1,6 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
+import { Program } from "../Misc/Program";
 
 export class Continue extends Instruccion {
     constructor(linea, columna) {
@@ -8,5 +9,13 @@ export class Continue extends Instruccion {
 
     public execute(ambito: Ambito) {
         return { type: 'Continue', line: this.linea, column: this.columna}
+    }
+
+    public graficar(padre:number){
+        let nodo = Program.NODO
+        Program.NODO++
+
+        Program.AST += "Nodo" + nodo + '[label="Continue"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + nodo+ "\n"
     }
 }

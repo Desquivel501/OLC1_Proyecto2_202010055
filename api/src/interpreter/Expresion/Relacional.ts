@@ -2,6 +2,7 @@ import {Expresion} from "./Expresion";
 import {Retorno, Type} from "./Retorno";
 import { Ambito } from "../Misc/Ambito";
 import { Error_ } from "../Error/Error";
+import { Program } from "../Misc/Program";
 
 export class Relacional extends Expresion{
 
@@ -75,6 +76,54 @@ export class Relacional extends Expresion{
             throw new Error_(this.linea, this.columna, "Semantico", "No se puede realizar operacion relacional entre " + Type[leftValue.type] + " y " + Type[rightValue.type]);
         }
 
+    }
+
+    public graficar(padre:number){
+        let aritmetica = Program.NODO
+        Program.NODO++
+        
+        let op = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + aritmetica + '[label="Relacional"]\n'
+        Program.AST += "Nodo" + padre + " -> Nodo" + aritmetica + "\n"
+
+        if(this.tipo ==  TipoRelacional.NOT){
+            Program.AST += "Nodo" + op + '[label=" ! "]'+ "\n"
+            Program.AST += "Nodo" + aritmetica + " -> Nodo" + op+ "\n"
+            this.left.graficar(aritmetica)
+        }else{
+
+            this.left.graficar(aritmetica)
+            Program.AST += "Nodo" + op + '[label=" ' + this.getOp() + ' "]'+ "\n"
+            Program.AST += "Nodo" + aritmetica + " -> Nodo" + op+ "\n"
+            this.right.graficar(aritmetica)
+        }
+
+        
+    }
+
+    getOp(){
+        switch(this.tipo){
+            case TipoRelacional.MAYOR:
+                return "\\>"
+            case TipoRelacional.MENOR:
+                return "\\<"
+            case TipoRelacional.DIFERENTE:
+                return "!="
+            case TipoRelacional.IGUAL_IGUAL:
+                return "=="
+            case TipoRelacional.MAYOR_IGUAL:
+                return "\\>="
+            case TipoRelacional.MENOR_IGUAL:
+                return "\\<="
+            case TipoRelacional.AND:
+                return "&&"
+            case TipoRelacional.OR:
+                return "||"
+            case TipoRelacional.NOT:
+                return "!"
+        }
     }
 }
 

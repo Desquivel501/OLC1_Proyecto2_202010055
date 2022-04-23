@@ -1,6 +1,7 @@
 import {Expresion} from "./Expresion";
 import {Retorno, Type} from "./Retorno";
 import { Ambito } from "../Misc/Ambito";
+import { Program } from "../Misc/Program";
 
 export class Literal extends Expresion{
 
@@ -30,7 +31,19 @@ export class Literal extends Expresion{
                 return {value: this.valor.toString(), type: Type.STRING}
             }
         }
+    }
 
+    public graficar(padre:number){
+        let acceso = Program.NODO
+        Program.NODO++
+        let id = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + acceso + '[label="Literal"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"
+
+        Program.AST += "Nodo" + id + '[label="' +  this.valor  +  '\\"]'+ "\n"
+        Program.AST += "Nodo" + acceso + " -> Nodo" + id+ "\n"
     }
 }
 

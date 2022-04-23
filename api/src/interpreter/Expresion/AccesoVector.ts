@@ -2,6 +2,7 @@ import { Error_ } from "../Error/Error";
 import { Ambito } from "../Misc/Ambito";
 import { Expresion } from "./Expresion";
 import { Retorno, Type, defaults } from "./Retorno";
+import { Program } from "../Misc/Program";
 
 export class AccesoVector1 extends Expresion{
     constructor(private id:string, private index, linea:number, columna:number){
@@ -44,6 +45,35 @@ export class AccesoVector1 extends Expresion{
             
         }
     }
+
+    public graficar(padre:number){
+        let acceso = Program.NODO
+        Program.NODO++
+
+        let vector = Program.NODO
+        Program.NODO++
+
+        let indice = Program.NODO
+        Program.NODO++
+
+        let id = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + acceso + '[label="Vector"]'
+        Program.AST += "Nodo" + padre + " -> Nodo" + acceso
+
+        Program.AST += "Nodo" + vector + '[label="id"]'
+        Program.AST += "Nodo" + acceso + " -> Nodo" + vector
+
+        Program.AST += "Nodo" + id + '[label="' + this.id + '"]'
+        Program.AST += "Nodo" + vector + " -> Nodo" + id
+
+        Program.AST += "Nodo" + indice + '[label="indice"]'
+        Program.AST += "Nodo" + acceso + " -> Nodo" + indice
+
+        this.index.graficar(indice)
+
+    }
 }
 
 export class AccesoVector2 extends Expresion{
@@ -75,6 +105,43 @@ export class AccesoVector2 extends Expresion{
             }
         }
         throw new Error_(this.linea, this.columna, 'Semantico', "Indice fuera del rango");
-        
+    }
+    
+    public graficar(padre:number){
+
+        let acceso = Program.NODO
+        Program.NODO++
+
+        let vector = Program.NODO
+        Program.NODO++
+
+        let indice_i = Program.NODO
+        Program.NODO++
+
+        let indice_j = Program.NODO
+        Program.NODO++
+
+        let id = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + acceso + '[label="Vector"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"
+
+        Program.AST += "Nodo" + vector + '[label="id"]'+ "\n"
+        Program.AST += "Nodo" + acceso + " -> Nodo" + vector+ "\n"
+
+        Program.AST += "Nodo" + id + '[label="' + this.id + '"]'+ "\n"
+        Program.AST += "Nodo" + vector + " -> Nodo" + id+ "\n"
+
+        Program.AST += "Nodo" + indice_i + '[label="indice"]'+ "\n"
+        Program.AST += "Nodo" + acceso + " -> Nodo" + indice_i+ "\n"
+
+        this.index_i.graficar(indice_i)
+
+        Program.AST += "Nodo" + indice_j + '[label="indice"]'+ "\n"
+        Program.AST += "Nodo" + acceso + " -> Nodo" + indice_j+ "\n"
+
+        this.index_j.graficar(indice_j)
+
     }
 }

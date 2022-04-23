@@ -2,6 +2,7 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
+import { Program } from "../Misc/Program";
 
 export class While extends Instruccion{
     constructor(private condicion, private cuerpo: Instruccion , linea, columna){
@@ -31,5 +32,38 @@ export class While extends Instruccion{
                 condicion = this.condicion.execute(ambito);
             }
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+
+        let Do = Program.NODO
+        Program.NODO++
+        
+        let While = Program.NODO;
+        Program.NODO++
+
+        let cuerpo = Program.NODO;
+        Program.NODO++
+
+        let condicion = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="while"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        Program.AST += "Nodo" + While + '[label="while"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + While+ "\n"
+
+        Program.AST += "Nodo" + condicion + '[label="condicion"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + condicion+ "\n"
+
+        this.condicion.graficar(condicion)
+
+        this.cuerpo.graficar(declaracion)
+
+
+
     }
 }

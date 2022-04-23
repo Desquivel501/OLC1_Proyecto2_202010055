@@ -2,6 +2,7 @@ import { Error_ } from "../Error/Error";
 import {Expresion} from "./Expresion";
 import {Retorno, Type} from "./Retorno";
 import { Ambito } from "../Misc/Ambito";
+import { Program } from "../Misc/Program";
 
 export class Aritmetica extends Expresion{
 
@@ -165,6 +166,52 @@ export class Aritmetica extends Expresion{
 
         }
 
+    }
+
+    
+    public graficar(padre:number){
+        let aritmetica = Program.NODO
+        Program.NODO++
+        
+        let op = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + aritmetica + '[label="Aritmetica"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + aritmetica+ "\n"
+
+        if(this.tipo == TipoAritmetico.INCRE || this.tipo == TipoAritmetico.DECRE){
+
+            this.left.graficar(aritmetica)
+            Program.AST += "Nodo" + op + '[label=" ' + this.getOp() + ' "]'+ "\n"
+            Program.AST += "Nodo" + aritmetica + " -> Nodo" + op+ "\n"
+        }else{
+
+            this.left.graficar(aritmetica)
+            Program.AST += "Nodo" + op + '[label=" ' + this.getOp() + ' "]'+ "\n"
+            Program.AST += "Nodo" + aritmetica + " -> Nodo" + op+ "\n"
+            this.right.graficar(aritmetica)
+        }
+
+        
+    }
+
+    getOp(){
+        switch(this.tipo){
+            case TipoAritmetico.SUMA:
+                return "+"
+            case TipoAritmetico.RESTA:
+                return "-"
+            case TipoAritmetico.DIVISION:
+                return "/"
+            case TipoAritmetico.MULTIPLICACION:
+                return "*"
+            case TipoAritmetico.POTENCIA:
+                return "^"
+            case TipoAritmetico.MODULO:
+                return "%"
+            case TipoAritmetico.INCRE:
+                return ""
+        }
     }
 }
 

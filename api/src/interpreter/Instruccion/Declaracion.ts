@@ -4,6 +4,7 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import {Type} from "../Expresion/Retorno";
 import { format } from "path";
+import { Program } from "../Misc/Program";
 
 export class Declaracion extends Instruccion{
     constructor(private tipo:Type, private ids:string[], private value:Expresion, private nueva:boolean, linea, columna){
@@ -42,6 +43,46 @@ export class Declaracion extends Instruccion{
                 }
             }
         }
+    }
+
+    public graficar(padre:number){
+        let declaracion = Program.NODO
+        Program.NODO++
+        
+        let tipo = Program.NODO;
+        Program.NODO++
+
+        let igual = Program.NODO;
+        Program.NODO++
+
+        let valor = Program.NODO;
+        Program.NODO++
+
+        let id = Program.NODO;
+        Program.NODO++
+
+        Program.AST += "Nodo" + declaracion + '[label="declaracion"]'+ "\n"
+        Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
+
+        if(this.nueva){
+            Program.AST += "Nodo" + tipo + '[label=" ' + Type[this.tipo] + ' "]'+ "\n"
+            Program.AST += "Nodo" + declaracion + " -> Nodo" + tipo+ "\n"
+        }
+
+        Program.AST += "Nodo" + id + '[label="id"]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + id+ "\n"
+
+        for(const val of this.ids){
+            let actual = Program.NODO;
+            Program.AST += "Nodo" + actual + '[label=" ' + val + ' "]'+ "\n"
+            Program.AST += "Nodo" + id + " -> Nodo" + actual+ "\n"
+            Program.NODO++
+        }
+
+        Program.AST += "Nodo" + igual + '[label="="]'+ "\n"
+        Program.AST += "Nodo" + declaracion + " -> Nodo" + igual+ "\n"
+
+        this.value.graficar(declaracion)
     }
 }
 
