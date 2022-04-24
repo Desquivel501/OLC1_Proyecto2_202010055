@@ -41,25 +41,11 @@ export class For extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
-        let For = Program.NODO
-        Program.NODO++
-        
-        let variable = Program.NODO;
-        Program.NODO++
-
-        Program.NODO++
-
-        let condicion = Program.NODO;
-        Program.NODO++
-
-        let actualizacion = Program.NODO;
-        Program.NODO++
-
-        let cuerpo = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let For = Program.getNodo()
+        let variable = Program.getNodo()
+        let condicion = Program.getNodo()
+        let actualizacion = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="for"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

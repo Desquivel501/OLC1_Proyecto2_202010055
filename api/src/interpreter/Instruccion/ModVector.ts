@@ -25,20 +25,11 @@ export class ModVector1 extends Instruccion{
 
     
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let indice = Program.NODO;
-        Program.NODO++
-
-        let igual = Program.NODO;
-        Program.NODO++
-
-        let valor = Program.NODO;
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let indice = Program.getNodo()
+        let igual = Program.getNodo()
+        let valor = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="modificar vector"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
@@ -82,24 +73,13 @@ export class ModVector2 extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let indice = Program.getNodo()
+        let indice2 = Program.getNodo()
+        let igual = Program.getNodo()
+        let valor = Program.getNodo()
+        let id = Program.getNodo()
         
-        let indice = Program.NODO;
-        Program.NODO++
-
-        let indice2 = Program.NODO;
-        Program.NODO++
-
-        let igual = Program.NODO;
-        Program.NODO++
-
-        let valor = Program.NODO;
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
-
         Program.AST += "Nodo" + declaracion + '[label="modificar vector"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
 

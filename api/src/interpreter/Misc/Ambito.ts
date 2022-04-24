@@ -72,7 +72,7 @@ export class Ambito{
 
 
     public crearVector1(id:string, type:Type, largo:number, linea: number, columna: number){
-        this.vectores1.set(id, new Vector1([],id,largo,type))
+        this.vectores1.set(id, new Vector1(new Array(largo),id,largo,type))
     }
 
     public setVector1(id:string, value:any, type:Type, index:number, linea: number, columna: number){
@@ -127,7 +127,14 @@ export class Ambito{
 
 
     public crearVector2(id:string, type:Type, largo_i:number, largo_j:number, linea: number, columna: number){
-        this.vectores2.set(id, new Vector2([], id, largo_i, largo_j, type))
+        let array = [];
+
+        for(let i = 0; i < largo_i; i++){
+            let array2 = new Array(largo_j);
+            array.push(array2)
+        }
+
+        this.vectores2.set(id, new Vector2(array, id, largo_i, largo_j, type))
     }
 
     public setVector2(id:string, value:any, type:Type, index_i:number, index_j:number, linea: number, columna: number){

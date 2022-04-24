@@ -45,8 +45,7 @@ export class Print extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
+        let declaracion = Program.getNodo()
 
         if(this.newLine){
             Program.AST += "Nodo" + declaracion + '[label="println"]'+ "\n"

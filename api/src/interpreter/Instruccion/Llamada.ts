@@ -53,14 +53,9 @@ export class Llamada extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let id = Program.NODO;
-        Program.NODO++
-
-        let parametros = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let id = Program.getNodo()
+        let parametros = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="llamada funcion"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

@@ -36,20 +36,11 @@ export class DoWhile extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
-        let Do = Program.NODO
-        Program.NODO++
-        
-        let While = Program.NODO;
-        Program.NODO++
-
-        let cuerpo = Program.NODO;
-        Program.NODO++
-
-        let condicion = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let Do = Program.getNodo()
+        let While = Program.getNodo()
+        let cuerpo = Program.getNodo()
+        let condicion = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="do while"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

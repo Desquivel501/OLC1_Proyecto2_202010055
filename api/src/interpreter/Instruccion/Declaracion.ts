@@ -46,20 +46,11 @@ export class Declaracion extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let tipo = Program.NODO;
-        Program.NODO++
-
-        let igual = Program.NODO;
-        Program.NODO++
-
-        let valor = Program.NODO;
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let tipo = Program.getNodo()
+        let igual = Program.getNodo()
+        let valor = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="declaracion"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
@@ -73,10 +64,9 @@ export class Declaracion extends Instruccion{
         Program.AST += "Nodo" + declaracion + " -> Nodo" + id+ "\n"
 
         for(const val of this.ids){
-            let actual = Program.NODO;
+            let actual = Program.getNodo();
             Program.AST += "Nodo" + actual + '[label=" ' + val + ' "]'+ "\n"
             Program.AST += "Nodo" + id + " -> Nodo" + actual+ "\n"
-            Program.NODO++
         }
 
         Program.AST += "Nodo" + igual + '[label="="]'+ "\n"

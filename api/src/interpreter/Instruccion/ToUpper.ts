@@ -23,8 +23,7 @@ export class ToUpper extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
+        let declaracion = Program.getNodo()
         
         Program.AST += "Nodo" + declaracion + '[label="toupper"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

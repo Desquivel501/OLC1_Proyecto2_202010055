@@ -15,14 +15,9 @@ export class Funcion extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let id = Program.NODO;
-        Program.NODO++
-
-        let parametros = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let id = Program.getNodo()
+        let parametros = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="declaracion funcion"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
@@ -34,10 +29,9 @@ export class Funcion extends Instruccion{
         Program.AST += "Nodo" + declaracion + " -> Nodo" + parametros + "\n"
 
         for(const val of this.parametros){
-            let par = Program.NODO;
+            let par = Program.getNodo()
             Program.AST += "Nodo" + par + '[label="' + val.id +'"]'+ "\n"
             Program.AST += "Nodo" + parametros + " -> Nodo" + par + "\n"
-            Program.NODO++
         }
 
         this.statement.graficar(declaracion)

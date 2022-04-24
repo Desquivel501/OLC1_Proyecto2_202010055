@@ -34,10 +34,8 @@ export class Literal extends Expresion{
     }
 
     public graficar(padre:number){
-        let acceso = Program.NODO
-        Program.NODO++
-        let id = Program.NODO;
-        Program.NODO++
+        let acceso = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + acceso + '[label="Literal"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"

@@ -24,14 +24,9 @@ export class Ternario extends Expresion{
     }
 
     public graficar(padre:number){
-        let ternario = Program.NODO
-        Program.NODO++
-        
-        let inte = Program.NODO;
-        Program.NODO++
-        
-        let dos_p = Program.NODO;
-        Program.NODO++
+        let ternario = Program.getNodo()
+        let inte = Program.getNodo()
+        let dos_p = Program.getNodo()
 
         Program.AST += "Nodo" + ternario + '[label="Ternario"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + ternario+ "\n"

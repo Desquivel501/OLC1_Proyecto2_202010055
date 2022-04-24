@@ -66,7 +66,7 @@ function App() {
 
       // document.getElementById('graphviz').innerHTML = "<Graphviz dot={`" + response.res + "`} />"
 
-      // document.getElementById('terminal').value = response.res
+      document.getElementById('terminal').value = response.res
       dot = response.res
 
     })

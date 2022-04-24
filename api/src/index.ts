@@ -64,11 +64,8 @@ app.get('/',function(req,res){
     const result = parser.parse(entrada)
 
     Program.AST += "digraph G{\n"
-    // Program.AST += "node [shape=record];"
 
-    let declaracion = Program.NODO
-    Program.NODO++
-
+    let declaracion = Program.getNodo()
     Program.AST += "Nodo" + declaracion + '[label="instruciones"]'+ "\n"
 
     try{
@@ -77,7 +74,6 @@ app.get('/',function(req,res){
       }
     }catch(error){
         console.log(error)
-        // Program.consola += error.getError()
     }
     Program.AST += "}\n"
     console.log(Program.AST)

@@ -56,11 +56,8 @@ export class Casteo extends Expresion{
     }
 
     public graficar(padre: number) {
-        let aritmetica = Program.NODO
-        Program.NODO++
-        
-        let op = Program.NODO;
-        Program.NODO++
+        let aritmetica = Program.getNodo()
+        let op = Program.getNodo()
 
         Program.AST += "Nodo" + aritmetica + '[label="Casteo"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + aritmetica+ "\n"

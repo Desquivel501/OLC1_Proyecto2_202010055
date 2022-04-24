@@ -19,8 +19,7 @@ export class Statement extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
+        let declaracion = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="cuerpo"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

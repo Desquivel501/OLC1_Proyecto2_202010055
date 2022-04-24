@@ -33,20 +33,11 @@ export class Switch extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
-        let SWITCH = Program.NODO;
-        Program.NODO++
-
-        let expresion = Program.NODO;
-        Program.NODO++
-
-        let cases = Program.NODO;
-        Program.NODO++
-
-        let Default = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let SWITCH = Program.getNodo()
+        let expresion = Program.getNodo()
+        let cases = Program.getNodo()
+        let Default = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="switch"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

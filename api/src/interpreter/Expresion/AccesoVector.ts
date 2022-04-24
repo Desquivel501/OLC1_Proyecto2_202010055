@@ -20,9 +20,22 @@ export class AccesoVector1 extends Expresion{
         if(ambito.tipoVector(this.id) == 2){
             console.log("here");
             const vec = ambito.getVector2(this.id)
-            console.log()
 
-            return {value: vec.valor[index.value], type: Type.VECTOR, }
+            if( vec.valor[index.value] == undefined){
+                return {value: new Array(vec.largo_j), type: Type.VECTOR, }
+            }
+
+            let array = []
+            for(const val of  vec.valor[index.value]){
+                if(val != undefined){
+                    array.push(val)
+                }else{
+                    const def = defaults[vec.type]
+                    array.push(def)
+                }
+            }
+
+            return {value:array, type: Type.VECTOR, }
             
         }else{
             if(value != null){
@@ -47,17 +60,10 @@ export class AccesoVector1 extends Expresion{
     }
 
     public graficar(padre:number){
-        let acceso = Program.NODO
-        Program.NODO++
-
-        let vector = Program.NODO
-        Program.NODO++
-
-        let indice = Program.NODO
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
+        let acceso = Program.getNodo()
+        let vector = Program.getNodo()
+        let indice = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + acceso + '[label="Vector"]'
         Program.AST += "Nodo" + padre + " -> Nodo" + acceso
@@ -109,20 +115,11 @@ export class AccesoVector2 extends Expresion{
     
     public graficar(padre:number){
 
-        let acceso = Program.NODO
-        Program.NODO++
-
-        let vector = Program.NODO
-        Program.NODO++
-
-        let indice_i = Program.NODO
-        Program.NODO++
-
-        let indice_j = Program.NODO
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
+        let acceso = Program.getNodo()
+        let vector = Program.getNodo()
+        let indice_i = Program.getNodo()
+        let indice_j = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + acceso + '[label="Vector"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"

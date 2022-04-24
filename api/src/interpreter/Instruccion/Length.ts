@@ -4,6 +4,7 @@ import { Instruccion } from "./Instruccion";
 import { Type } from "../Expresion/Retorno";
 import { Error_ } from "../Error/Error";
 import { Program } from "../Misc/Program";
+import { Vector1, Vector2 } from "../Misc/Vector";
 
 export class Length extends Instruccion{
     constructor(private value:Expresion, linea, columna){
@@ -17,10 +18,12 @@ export class Length extends Instruccion{
         if(valorActual.type == Type.STRING){
             const cadena = valorActual.value;
             return {value: cadena.length, type: Type.NUMBER}
+
         }else if(valorActual.type == Type.VECTOR){
-            const vector = valorActual.value
+            const vector = valorActual.value;
+            console.log(" ")
+            console.log(vector)
             return {value: vector.length, type: Type.NUMBER}
-            
         }
         
         else{
@@ -29,9 +32,8 @@ export class Length extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
+        let declaracion = Program.getNodo()
+        
         Program.AST += "Nodo" + declaracion + '[label="length"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
 

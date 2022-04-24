@@ -9,17 +9,8 @@ export class Case extends Instruccion{
     public execute(ambito: Ambito) {}
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
-        let Case = Program.NODO;
-        Program.NODO++
-
-        let condicion = Program.NODO;
-        Program.NODO++
-        
-        let cuerpo = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let condicion = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="case"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

@@ -15,15 +15,20 @@ export class Acceso extends Expresion{
         if(value != null) return {value:value.valor, type:value.type}
 
         if(ambito.tipoVector(this.id) == 1){
+            console.log("here1")
             const vec = ambito.getVector1(this.id)
             return {value: vec.valor, type: Type.VECTOR}
 
+             
         }else if(ambito.tipoVector(this.id) == 2){
-
+            console.log("here2")
             const vec = ambito.getVector2(this.id)
-            let vector =[]
+            
+            let vector = []
             for(const val_i of vec.valor){
-                let sub_vector = []
+
+                let sub_vector = [];
+                // if(val_i == undefined || val_i == null) continue;   
                 for(const val_j of val_i){
                     if(val_j != undefined){
                         sub_vector.push(val_j)
@@ -42,10 +47,8 @@ export class Acceso extends Expresion{
     }
 
     public graficar(padre:number){
-        let acceso = Program.NODO
-        Program.NODO++
-        let id = Program.NODO;
-        Program.NODO++
+        let acceso = Program.getNodo()
+        let id = Program.getNodo()
 
         Program.AST += "Nodo" + acceso + '[label="Acceso"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"

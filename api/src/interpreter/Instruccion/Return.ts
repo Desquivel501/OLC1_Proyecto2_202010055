@@ -14,8 +14,7 @@ export class Return extends Instruccion {
     }
 
     public graficar(padre:number){
-        let nodo = Program.NODO
-        Program.NODO++
+        let nodo = Program.getNodo()
 
         Program.AST += "Nodo" + nodo + '[label="Return"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + nodo+ "\n"

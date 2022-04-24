@@ -23,20 +23,10 @@ export class If extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-
-        let IF = Program.NODO;
-        Program.NODO++
-
-        let condicion = Program.NODO;
-        Program.NODO++
-        
-        let cuerpo = Program.NODO;
-        Program.NODO++
-
-        let Else = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let IF = Program.getNodo()
+        let condicion = Program.getNodo()
+        let Else = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="if"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"

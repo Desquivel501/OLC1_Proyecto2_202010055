@@ -47,26 +47,13 @@ export class DeclararVector1 extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let tipo1 = Program.NODO;
-        Program.NODO++
-
-        let tipo2 = Program.NODO;
-        Program.NODO++
-
-        let igual = Program.NODO;
-        Program.NODO++
-
-        let valor = Program.NODO;
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
-
-        let nuevo = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let tipo1 = Program.getNodo()
+        let tipo2 = Program.getNodo()
+        let igual = Program.getNodo()
+        let valor = Program.getNodo()
+        let id = Program.getNodo()
+        let nuevo = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="declaracion vector"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
@@ -165,29 +152,14 @@ export class DeclararVector2 extends Instruccion{
     }
 
     public graficar(padre:number){
-        let declaracion = Program.NODO
-        Program.NODO++
-        
-        let tipo1 = Program.NODO;
-        Program.NODO++
-
-        let tipo2 = Program.NODO;
-        Program.NODO++
-
-        let igual = Program.NODO;
-        Program.NODO++
-
-        let valor = Program.NODO;
-        Program.NODO++
-
-        let valor2 = Program.NODO;
-        Program.NODO++
-
-        let id = Program.NODO;
-        Program.NODO++
-
-        let nuevo = Program.NODO;
-        Program.NODO++
+        let declaracion = Program.getNodo()
+        let tipo1 = Program.getNodo()
+        let tipo2 = Program.getNodo()
+        let igual = Program.getNodo()
+        let valor = Program.getNodo()
+        let valor2 = Program.getNodo()
+        let id = Program.getNodo()
+        let nuevo = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="declaracion vector"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + declaracion+ "\n"
@@ -207,13 +179,12 @@ export class DeclararVector2 extends Instruccion{
             Program.AST += "Nodo" + declaracion + " -> Nodo" + valor+ "\n"
 
             for(const val of this.values){
-                let lista = Program.NODO;
+                let lista = Program.getNodo();
                 Program.AST += "Nodo" + lista + '[label="[lista valores]"]'+ "\n"
                 Program.AST += "Nodo" + valor + " -> Nodo" + lista+ "\n"
                 for(const lis of val){
                     lis.graficar(valor)
                 }
-                Program.NODO++
             }
         }else{
             Program.AST += "Nodo" + nuevo + '[label="new"]'+ "\n"
