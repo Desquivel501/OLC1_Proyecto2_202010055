@@ -3,6 +3,8 @@ import { Type } from "../Expresion/Retorno";
 import { Simbolo } from "./Simbolo";
 import { Vector1, Vector2 } from "./Vector";
 import { Funcion } from "../Instruccion/Funcion";
+import { Program } from "./Program";
+import { SimboloTabla } from "./SimboloTabla";
 
 export class Ambito{
     public variables:Map<string, Simbolo>;
@@ -10,7 +12,7 @@ export class Ambito{
     public vectores1:Map<string, Vector1>;
     public vectores2:Map<string, Vector2>;
 
-    constructor(public anterior: Ambito |null){
+    constructor(public anterior: Ambito |null, public nombre:String){
         this.variables = new Map()
         this.funciones = new Map()
         this.vectores1 = new Map()
@@ -32,6 +34,7 @@ export class Ambito{
             env = env.anterior
         }
         this.variables.set(id, new Simbolo(value,id,type))
+        Program.agregarTabla(new SimboloTabla(id,"Variable",Type[type],this.nombre,linea,columna))
     }
 
     public getVal(id:string):Simbolo{
@@ -47,6 +50,13 @@ export class Ambito{
 
     public guardarFuncion(id: string, funcion: Funcion){
         this.funciones.set(id,funcion);
+
+        if(funcion.tipo == Type.VOID){
+            Program.agregarTabla(new SimboloTabla(id,"Metodo","VOID",this.nombre,funcion.linea,funcion.columna))
+        }else{
+            Program.agregarTabla(new SimboloTabla(id,"Funcion",Type[funcion.tipo],this.nombre,funcion.linea,funcion.columna))
+        }
+        
     }
 
     public getFuncion(id: string): Funcion | undefined {
@@ -72,6 +82,7 @@ export class Ambito{
 
 
     public crearVector1(id:string, type:Type, largo:number, linea: number, columna: number){
+        Program.agregarTabla(new SimboloTabla(id,"Vector",Type[type],this.nombre,linea,columna))
         this.vectores1.set(id, new Vector1(new Array(largo),id,largo,type))
     }
 
@@ -135,6 +146,7 @@ export class Ambito{
         }
 
         this.vectores2.set(id, new Vector2(array, id, largo_i, largo_j, type))
+        Program.agregarTabla(new SimboloTabla(id,"Vector",Type[type],this.nombre,linea,columna))
     }
 
     public setVector2(id:string, value:any, type:Type, index_i:number, index_j:number, linea: number, columna: number){

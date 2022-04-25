@@ -3,21 +3,26 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class If extends Instruccion{
-    constructor(private condicion, private cuerpo: Instruccion, private Else: Instruccion, linea, columna){
+    constructor(private condicion, private cuerpo: Statement, private Else: Statement, linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
         const valor = this.condicion.execute(ambito);
+        const nombre = "If (" + Program.noIf + ")"
+        Program.noIf++
 
         if(valor.type != Type.BOOLEAN){
             throw new Error_(this.linea, this.columna, "Semantico", "La condicion de un If debe ser de tipo BOOLEAN");
         }
         if(valor.value){
+            this.cuerpo.nombre = nombre
             return this.cuerpo.execute(ambito)
         }else if(this.Else != null){
+            this.Else.nombre = nombre
             return this.Else.execute(ambito)
         }
     }

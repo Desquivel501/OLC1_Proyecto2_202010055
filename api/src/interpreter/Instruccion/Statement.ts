@@ -2,12 +2,13 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Program } from "../Misc/Program";
 export class Statement extends Instruccion{
+    public nombre:string = null;
     constructor(private codigo:Instruccion[], linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
-        const newAmbito = new Ambito(ambito);
+        const newAmbito = new Ambito(ambito,this.nombre);
         for(const inst of this.codigo){
             try{
                 const element = inst.execute(newAmbito);

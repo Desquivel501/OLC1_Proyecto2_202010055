@@ -2,13 +2,16 @@ import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Case } from "./Case";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class Switch extends Instruccion{
-    constructor(private condicion, private Case: Case[], private Default: Instruccion, linea, columna){
+    constructor(private condicion, private Case: Case[], private Default: Statement, linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
+        const nombre = "Switch (" + Program.noSwitch + ")"
+        Program.noSwitch++
         let found_break = false;
         const condicion = this.condicion.execute(ambito);
         if(this.Case != null){
@@ -16,6 +19,7 @@ export class Switch extends Instruccion{
                 const val_case = cas.condicion.execute(ambito)
 
                 if(val_case.value == condicion.value){
+                    cas.cuerpo.nombre = nombre
                     const res = cas.cuerpo.execute(ambito);
                     if (res != null && res != undefined) {
                         if (res.type == 'Break') {
@@ -28,6 +32,7 @@ export class Switch extends Instruccion{
             }
         }
         if(this.Default != null && !found_break){
+            this.Default.nombre = nombre
             this.Default.execute(ambito);
         }
     }

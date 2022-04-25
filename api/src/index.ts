@@ -32,20 +32,29 @@ app.get('/',function(req,res){
     Program.consola = "";
     const result = parser.parse(entrada)
     console.log(result)
+
+    Program.AST += "digraph G{\n"
+    let declaracion = Program.getNodo()
+    Program.AST += "Nodo" + declaracion + '[label="instruciones"]'+ "\n"
+
     try{
-      const ambito = new Ambito(null)
+      const ambito = new Ambito(null,"-")
       for(const inst of result){
         inst.execute(ambito);
+        inst.graficar(declaracion);
       }
     }catch(error){
         console.log(error)
         Program.consola += error.getError()
     }
     console.log(Program.consola)
-
+    Program.imprimirTabla()
+    Program.AST += "}\n"
+    console.log(Program.imprimirTabla())
     const jsonData = {
       "res": String(Program.consola),
-      "obj": result
+      "ast": Program.AST,
+      "tabla":Program.imprimirTabla()
     }
 
     return res.send(JSON.stringify(jsonData))
@@ -64,7 +73,6 @@ app.get('/',function(req,res){
     const result = parser.parse(entrada)
 
     Program.AST += "digraph G{\n"
-
     let declaracion = Program.getNodo()
     Program.AST += "Nodo" + declaracion + '[label="instruciones"]'+ "\n"
 
@@ -88,9 +96,12 @@ app.get('/',function(req,res){
   });
 
 
+
 app.use(express.json())
 app.listen( port, () => {
     // tslint:disable-next-line:no-console
     console.log( `server started at http://localhost:${ port }` );
 } );
+
+
 

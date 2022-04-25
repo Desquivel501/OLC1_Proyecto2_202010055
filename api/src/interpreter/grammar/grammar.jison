@@ -231,13 +231,11 @@ default
     ;
 
 while
-    : TK_WHILE TK_PARIZQ condicion TK_PARDER TK_LLAVIZQ instrucciones TK_LLAVDER    {$$ = new While($3, new Statement($6, @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
-    | TK_WHILE TK_PARIZQ condicion TK_PARDER TK_LLAVIZQ TK_LLAVDER                  {$$ = new While($3, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    : TK_WHILE TK_PARIZQ condicion TK_PARDER statement    {$$ = new While($3, $5, @1.first_line, @1.first_column)}
     ;
 
 do_while
-    : TK_DO TK_LLAVIZQ instrucciones TK_LLAVDER TK_WHILE TK_PARIZQ condicion TK_PARDER    {$$ = new While($7, new Statement($3, @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
-    | TK_DO TK_LLAVIZQ TK_LLAVDER TK_WHILE TK_PARIZQ condicion TK_PARDER                  {$$ = new While($7, new Statement([], @1.first_line, @1.first_column), @1.first_line, @1.first_column)}
+    : TK_DO statement TK_WHILE TK_PARIZQ condicion TK_PARDER    {$$ = new While($7,$2, @1.first_line, @1.first_column)}
     ;
 
 

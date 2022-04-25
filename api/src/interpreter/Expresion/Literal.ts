@@ -40,7 +40,7 @@ export class Literal extends Expresion{
         Program.AST += "Nodo" + acceso + '[label="Literal"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + acceso+ "\n"
 
-        Program.AST += "Nodo" + id + '[label="' +  this.valor  +  '\\"]'+ "\n"
+        Program.AST += "Nodo" + id + '[label="' +  this.valor  +  '\"]'+ "\n"
         Program.AST += "Nodo" + acceso + " -> Nodo" + id+ "\n"
     }
 }

@@ -25,7 +25,9 @@ export class Llamada extends Instruccion{
             throw new Error_(this.linea, this.columna, 'Semantico', 'Cantidad de parametros incorrecta');
         }
 
-        const newEnv = new Ambito(ambito.getGlobal());
+        const nombre = "Funcion " + this.id;
+
+        const newEnv = new Ambito(ambito.getGlobal(), nombre);
         for(let i = 0; i < this.listaExpresiones.length; i++){
             const value = this.listaExpresiones[i].execute(ambito);
             if(funcion.parametros[i].type != value.type){
@@ -34,6 +36,7 @@ export class Llamada extends Instruccion{
                 newEnv.setVal(funcion.parametros[i].id, value.value, value.type, this.linea, this.columna)
             }
         }
+        funcion.statement.nombre = nombre
         const res = funcion.statement.execute(newEnv);
 
         if(funcion.tipo != Type.VOID){

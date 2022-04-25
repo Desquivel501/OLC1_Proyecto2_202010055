@@ -4,9 +4,10 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class Funcion extends Instruccion{
-    constructor(public id, public statement: Instruccion, public parametros: Array<Parametro>, public tipo: Type, linea, columna){
+    constructor(public id, public statement: Statement, public parametros: Array<Parametro>, public tipo: Type, linea, columna){
         super(linea, columna)
     }
 

@@ -3,13 +3,18 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 export class For extends Instruccion{
-    constructor(private variable, private condicion, private actualizacion, private cuerpo: Instruccion , linea, columna){
+    constructor(private variable, private condicion, private actualizacion, private cuerpo: Statement , linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
-        const newAmbito = new Ambito(ambito);
+        
+        const nombre = "For (" + Program.noFor + ")"
+        Program.noFor++;
+
+        const newAmbito = new Ambito(ambito,nombre);
 
         this.variable.execute(newAmbito);
         let variableID = this.variable.ids[0]
@@ -21,6 +26,7 @@ export class For extends Instruccion{
 
         if(this.cuerpo != null){
             while(condicion.value){
+                this.cuerpo.nombre = nombre;
                 const res = this.cuerpo.execute(newAmbito);
                 if (res != null && res != undefined) {
                     if (res.type == 'Break') {

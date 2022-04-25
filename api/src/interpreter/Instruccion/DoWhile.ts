@@ -4,9 +4,10 @@ import { Case } from "./Case";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class DoWhile extends Instruccion{
-    constructor(private condicion, private cuerpo: Instruccion , linea, columna){
+    constructor(private condicion, private cuerpo: Statement , linea, columna){
         super(linea, columna)
     }
 
@@ -17,9 +18,12 @@ export class DoWhile extends Instruccion{
         if(condicion.type != Type.BOOLEAN){
             throw new Error_(this.linea, this.columna, "Semantico", "La condicion de un While debe ser de tipo BOOLEAN");
         }
+        const nombre = "Do While (" + Program.noDoWhile + ")"
+        Program.noDoWhile++;
 
         if(this.cuerpo != null){
             do {
+                this.cuerpo.nombre = nombre
                 const res = this.cuerpo.execute(ambito);
                 if (res != null && res != undefined) {
                     if (res.type == 'Break') {
@@ -39,7 +43,6 @@ export class DoWhile extends Instruccion{
         let declaracion = Program.getNodo()
         let Do = Program.getNodo()
         let While = Program.getNodo()
-        let cuerpo = Program.getNodo()
         let condicion = Program.getNodo()
 
         Program.AST += "Nodo" + declaracion + '[label="do while"]'+ "\n"

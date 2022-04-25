@@ -1,9 +1,10 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class Case extends Instruccion{
-    constructor(public condicion, public cuerpo:Instruccion, linea, columna){
+    constructor(public condicion, public cuerpo:Statement, linea, columna){
         super(linea, columna)
     }
     public execute(ambito: Ambito) {}
