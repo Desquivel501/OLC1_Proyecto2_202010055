@@ -14,11 +14,12 @@ export class Llamada extends Instruccion{
     public execute(ambito: Ambito) {
 
         if(!this.main){
-            return
+            throw new Error_(this.linea, this.columna, 'Semantico', 'Funcion "' + this.id + '" llamada sin el comando "Run"');
         }
 
         const funcion = ambito.getFuncion(this.id);
         if(funcion == null){
+            
             throw new Error_(this.linea, this.columna, 'Semantico', 'La funcion "' + this.id + '" no se ha encontrado');
         }
         if(this.listaExpresiones.length != funcion.parametros.length){

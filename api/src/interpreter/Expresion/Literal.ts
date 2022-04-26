@@ -13,7 +13,7 @@ export class Literal extends Expresion{
 
         switch(this.tipo){
             case TipoLiteral.NUMBER:{
-                return {value: Number(this.valor), type: Type.NUMBER}
+                return {value: Number(this.valor), type: Type.INTEGER}
             }
             case TipoLiteral.DOBLE:{
                 return {value: Number(this.valor), type: Type.DOBLE}

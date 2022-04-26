@@ -26,6 +26,7 @@
     const {Return} = require("../Instruccion/Return")
     const {Funcion} = require("../Instruccion/Funcion")
     const {Llamada} = require("../Instruccion/Llamada")
+    const {Error_} = require("../Error/Error")
 
     const {DeclararVector1, DeclararVector2} = require("../Instruccion/DeclararVector")
     const {ModVector1, ModVector2} = require("../Instruccion/ModVector")
@@ -115,7 +116,8 @@
 
 
 
-. 					                        { Program.consola += "Error Lexico - El carecter '" + yytext + "' no pertenece al lenguaje (Linea " + yylloc.first_line + "; Columna " + yylloc.first_column + ")\n" }
+// . 					                        { Program.consola += "Error Lexico - El carecter '" + yytext + "' no pertenece al lenguaje (Linea " + yylloc.first_line + "; Columna " + yylloc.first_column + ")\n" }
+. 					                        { new Error_(yylloc.first_line, yylloc.first_column, "Lexico", "El carecter '" + yytext + "' no pertenece al lenguaje"); }
 <<EOF>>                                     return 'EOF';
 
 /lex
@@ -264,7 +266,7 @@ asignacion
     ;   
 
 dec_for
-    : TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion(Type.NUMBER, [$2], $4, true, @1.first_line, @1.first_column)}
+    : TK_INT IDENTIFICADOR TK_IGUAL expresion TK_PTCOMA         {$$ = new Declaracion(Type.INTEGER, [$2], $4, true, @1.first_line, @1.first_column)}
     ;
 
 
@@ -313,7 +315,7 @@ expresion
 
     | IDENTIFICADOR                                  {$$= new Acceso($1,@1.first_line, @1.first_column)}
 
-    | TK_PARIZQ TK_INT TK_PARDER expresion  %prec CASTEO            {$$ = new Casteo(Type.NUMBER,$4,@1.first_line, @1.first_column)}
+    | TK_PARIZQ TK_INT TK_PARDER expresion  %prec CASTEO            {$$ = new Casteo(Type.INTEGER,$4,@1.first_line, @1.first_column)}
     | TK_PARIZQ TK_DOBLE TK_PARDER expresion  %prec CASTEO          {$$ = new Casteo(Type.DOBLE,$4,@1.first_line, @1.first_column)}
     | TK_PARIZQ TK_CHAR TK_PARDER expresion   %prec CASTEO         {$$ = new Casteo(Type.CHAR,$4,@1.first_line, @1.first_column)}
 
@@ -370,7 +372,7 @@ parametros
     ;
 
 tipo 
-    : TK_INT                {$$ = Type.NUMBER}
+    : TK_INT                {$$ = Type.INTEGER}
     | TK_STRING             {$$ = Type.STRING}
     | TK_DOBLE              {$$ = Type.DOBLE}
     | TK_BOOLEAN            {$$ = Type.BOOLEAN}

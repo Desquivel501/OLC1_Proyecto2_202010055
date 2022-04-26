@@ -17,13 +17,13 @@ export class Length extends Instruccion{
 
         if(valorActual.type == Type.STRING){
             const cadena = valorActual.value;
-            return {value: cadena.length, type: Type.NUMBER}
+            return {value: cadena.length, type: Type.INTEGER}
 
         }else if(valorActual.type == Type.VECTOR){
             const vector = valorActual.value;
             console.log(" ")
             console.log(vector)
-            return {value: vector.length, type: Type.NUMBER}
+            return {value: vector.length, type: Type.INTEGER}
         }
         
         else{

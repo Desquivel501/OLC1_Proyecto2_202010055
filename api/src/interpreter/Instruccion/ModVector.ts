@@ -14,7 +14,7 @@ export class ModVector1 extends Instruccion{
     public execute(ambito: Ambito) {
         const index = this.index.execute(ambito)
 
-        if(index.type != Type.NUMBER){
+        if(index.type != Type.INTEGER){
             throw new Error_(this.linea, this.columna, 'Semantico', "Indice no Valido");
         }
 
@@ -63,7 +63,7 @@ export class ModVector2 extends Instruccion{
         const index_i = this.index_i.execute(ambito)
         const index_j = this.index_j.execute(ambito)
 
-        if(index_i.type != Type.NUMBER || index_j.type != Type.NUMBER){
+        if(index_i.type != Type.INTEGER || index_j.type != Type.INTEGER){
             throw new Error_(this.linea, this.columna, 'Semantico', "Indice no Valido");
         }
 

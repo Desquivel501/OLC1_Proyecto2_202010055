@@ -13,7 +13,7 @@ export class AccesoVector1 extends Expresion{
         const index = this.index.execute(ambito)
         let value = ambito.getVector1(this.id)
 
-        if(index.type != Type.NUMBER){
+        if(index.type != Type.INTEGER){
             throw new Error_(this.linea, this.columna, 'Semantico', "Indice no Valido");
         }
         console.log(ambito.tipoVector(this.id))
@@ -93,7 +93,7 @@ export class AccesoVector2 extends Expresion{
 
         const value = ambito.getVector2(this.id)
 
-        if(index_i.type != Type.NUMBER || index_j.type != Type.NUMBER){
+        if(index_i.type != Type.INTEGER || index_j.type != Type.INTEGER){
             throw new Error_(this.linea, this.columna, 'Semantico', "Indice no Valido");
         }
         if(value.largo_i > index_i.value && value.largo_j > index_j.value){

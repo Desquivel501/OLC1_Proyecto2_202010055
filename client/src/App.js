@@ -2,29 +2,43 @@
 import './App.css';
 import Editor from "@monaco-editor/react";
 import { useRef } from 'react';
-// import {graphviz} from "d3-graphviz";
-// import logo from './logo.png';
-// import * as d3                    from 'd3'
-// import * as d3Graphviz            from 'd3-graphviz'
-import { Graphviz } from 'graphviz-react';
+import React, {useState} from "react";
+import { Graphviz } from "graphviz-react";
+
+function useForceUpdate(){
+  const [value, setValue] = useState(0); 
+  return () => setValue(value => value + 1); 
+}
+
+let ast = "graph G{}"
+let tabla = "graph G{}"
+let errores = "graph G{}"
+
+let Options = {
+  fit: true,
+  height: 700,
+  width: 1000,
+  zoom: true,
+};
 
 function App() {
 
+  const forceUpdate = useForceUpdate();
+
   const editorRef = useRef(null);
+
+  function Click(){
+    enviar() 
+    useForceUpdate()
+  }
+  
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor; 
   }
 
-  let dot = `graph {
-    grandparent -- "parent A";
-    child;
-    "parent B" -- child;
-    grandparent --  "parent B";
-  }`
-
   function enviar() {
-  
+
     var command = editorRef.current.getValue()
     const jsonData = {
       "exp": String(command)
@@ -40,36 +54,13 @@ function App() {
     .then(response =>{
       console.log(response)
       document.getElementById('terminal').value = response.res
-      
-    })
-  }
 
-  function ast() {
-
-    // graphviz(`#graphviz`).renderDot('digraph {a -> b}');
-
-    var command = editorRef.current.getValue()
-    const jsonData = {
-      "exp": String(command)
-    }
-
-    fetch('http://localhost:5000/ast', {  
-      method: 'POST', 
-      headers: { 'Content-Type': 'application/json' },
-      mode: 'cors', 
-      body: JSON.stringify(jsonData)
-    })
-    .then(res => res.json())
-    .then(response =>{
-      console.log(response)
-
-
-      document.getElementById('terminal').value = response.res
-      dot = response.res
+      ast = response.ast
+      tabla = response.tabla
+      errores = response.errores
 
     })
   }
-
 
   return (
     
@@ -112,20 +103,39 @@ function App() {
       <div class='wrapper'>
         <div class='row'>
           <div class='column'>
-            <button class="button" onClick={enviar}>Resultado</button>
-          </div>
-          {/* <div class='column'>
-            <button class="button" onClick={ast}>Generar AST</button>
+            <button class="button" onClick={enviar} >Resultado</button>
           </div>
           <div class='column'>
-            <button class="button" >Tabla de Simbolos</button>
-          </div> */}
+            <button class="button" onClick={forceUpdate}>Generar Reportes</button>
+          </div>
         </div>
       </div>
-{/* 
-      <div class='wrapper' id="graphviz">
-      <Graphviz classname = "canvas" dot={dot} />
-      </div> */}
+
+      <div class='wrapper_graph' id="graphviz">
+        <div class="sub_titulo">AST</div>
+        <Graphviz classname = "canvas" 
+          dot={ast}
+          options = {Options}
+        />
+      </div>
+
+      <div class='wrapper_graph' id="graphviz">
+        <div class="sub_titulo">Tabla de Simbolos</div>
+        <Graphviz 
+          classname = "canvas" 
+          dot={tabla}
+          options = {Options}
+        />
+      </div>
+
+      <div class='wrapper_graph' id="graphviz">
+        <div class="sub_titulo">Tabla de Errores</div>
+        <Graphviz 
+          classname = "canvas" 
+          dot={errores}
+          options = {Options}
+        />
+      </div>
 
 
     </div>

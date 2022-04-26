@@ -1,5 +1,5 @@
 export enum Type{
-    NUMBER,
+    INTEGER,
     DOBLE,
     BOOLEAN,
     CHAR,
@@ -15,16 +15,16 @@ export type Retorno = {
 
 export const tipos = [
     [
-        Type.NUMBER, Type.DOBLE, Type.NUMBER, Type.NUMBER, Type.STRING
+        Type.INTEGER, Type.DOBLE, Type.INTEGER, Type.INTEGER, Type.STRING
     ],
     [
         Type.DOBLE, Type.DOBLE, Type.DOBLE, Type.DOBLE, Type.STRING
     ],
     [
-        Type.NUMBER, Type.DOBLE, -1 , -1, Type.STRING
+        Type.INTEGER, Type.DOBLE, -1 , -1, Type.STRING
     ],
     [
-        Type.NUMBER, Type.DOBLE, -1 , Type.STRING, Type.STRING
+        Type.INTEGER, Type.DOBLE, -1 , Type.STRING, Type.STRING
     ],
     [
         Type.STRING, Type.STRING, Type.STRING, Type.STRING, Type.STRING

@@ -14,7 +14,7 @@ export class Statement extends Instruccion{
                 const element = inst.execute(newAmbito);
                 if(element != null || element != undefined) return element;
             }catch(error){
-                console.log(error)
+                // console.log(error)
             }
         }
     }

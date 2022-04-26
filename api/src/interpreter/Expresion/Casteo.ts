@@ -15,9 +15,9 @@ export class Casteo extends Expresion{
         const casteo = this.casteoValido(valorActual.type, this.nuevoTipo);
         if(casteo == 1){
             switch(valorActual.type){
-                case Type.NUMBER:{
-                    if(this.nuevoTipo == Type.NUMBER){
-                        return{value:(valorActual.value), type: Type.NUMBER}
+                case Type.INTEGER:{
+                    if(this.nuevoTipo == Type.INTEGER){
+                        return{value:(valorActual.value), type: Type.INTEGER}
                     }else if(this.nuevoTipo == Type.DOBLE){
                         return{value:(valorActual.value), type: Type.DOBLE}
                     }else if(this.nuevoTipo == Type.CHAR){
@@ -28,8 +28,8 @@ export class Casteo extends Expresion{
                 }
 
                 case Type.DOBLE:{
-                    if(this.nuevoTipo == Type.NUMBER){
-                        return{value:(Math.trunc(valorActual.value)), type: Type.NUMBER}
+                    if(this.nuevoTipo == Type.INTEGER){
+                        return{value:(Math.trunc(valorActual.value)), type: Type.INTEGER}
                     }else if(this.nuevoTipo == Type.DOBLE){
                         return{value:(valorActual.value), type: Type.DOBLE}
                     }else{
@@ -38,8 +38,8 @@ export class Casteo extends Expresion{
                 }
 
                 case Type.CHAR:{
-                    if(this.nuevoTipo == Type.NUMBER){
-                        return{value:(valorActual.value.toString().charCodeAt(0)), type: Type.NUMBER}
+                    if(this.nuevoTipo == Type.INTEGER){
+                        return{value:(valorActual.value.toString().charCodeAt(0)), type: Type.INTEGER}
                     }else if(this.nuevoTipo == Type.DOBLE){
                         return{value:(valorActual.value.toString().charCodeAt(0)), type: Type.DOBLE}
                     }else if(this.nuevoTipo == Type.CHAR){

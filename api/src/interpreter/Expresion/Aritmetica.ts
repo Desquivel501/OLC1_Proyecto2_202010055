@@ -14,8 +14,8 @@ export class Aritmetica extends Expresion{
 
         if(this.tipo == TipoAritmetico.INCRE){
             const leftValue = this.left.execute(ambito);
-            if(leftValue.type == Type.NUMBER){
-                return{value:(leftValue.value+1), type: Type.NUMBER}
+            if(leftValue.type == Type.INTEGER){
+                return{value:(leftValue.value+1), type: Type.INTEGER}
             }else{
                 throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
             }
@@ -23,8 +23,8 @@ export class Aritmetica extends Expresion{
         }
         if(this.tipo == TipoAritmetico.DECRE){
             const leftValue = this.left.execute(ambito);
-            if(leftValue.type == Type.NUMBER){
-                return{value:(leftValue.value-1), type: Type.NUMBER}
+            if(leftValue.type == Type.INTEGER){
+                return{value:(leftValue.value-1), type: Type.INTEGER}
             }else{
                 throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
             }
@@ -38,14 +38,14 @@ export class Aritmetica extends Expresion{
             case TipoAritmetico.SUMA:{
 
                 switch(tipoDominante){
-                    case Type.NUMBER:{
+                    case Type.INTEGER:{
                         if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
-                            return{value:(leftValue.value.toString().charCodeAt(0) + rightValue.value), type: Type.NUMBER}
+                            return{value:(leftValue.value.toString().charCodeAt(0) + rightValue.value), type: Type.INTEGER}
                         }
                         if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
-                            return{value:(leftValue.value + rightValue.value.toString().charCodeAt(0)), type: Type.NUMBER}
+                            return{value:(leftValue.value + rightValue.value.toString().charCodeAt(0)), type: Type.INTEGER}
                         }
-                        return{value:(leftValue.value + rightValue.value), type: Type.NUMBER}
+                        return{value:(leftValue.value + rightValue.value), type: Type.INTEGER}
                     }
                     case Type.STRING:{
                         return{value:(leftValue.value.toString() + rightValue.value.toString()), type: Type.STRING}
@@ -63,14 +63,14 @@ export class Aritmetica extends Expresion{
             case TipoAritmetico.RESTA:{
 
                 switch(tipoDominante){
-                    case Type.NUMBER:{
+                    case Type.INTEGER:{
                         if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
-                            return{value:(leftValue.value.toString().charCodeAt(0) - rightValue.value), type: Type.NUMBER}
+                            return{value:(leftValue.value.toString().charCodeAt(0) - rightValue.value), type: Type.INTEGER}
                         }
                         if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
-                            return{value:(leftValue.value - rightValue.value.toString().charCodeAt(0)), type: Type.NUMBER}
+                            return{value:(leftValue.value - rightValue.value.toString().charCodeAt(0)), type: Type.INTEGER}
                         }
-                        return{value:(leftValue.value - rightValue.value), type: Type.NUMBER}
+                        return{value:(leftValue.value - rightValue.value), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
                         return{value:(leftValue.value - rightValue.value), type: Type.DOBLE}
@@ -86,7 +86,7 @@ export class Aritmetica extends Expresion{
                     throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 switch(tipoDominante){
-                    case Type.NUMBER:{
+                    case Type.INTEGER:{
                         if(rightValue.value == 0){
                             throw new Error_(this.linea, this.columna, "Semantico", "No se puede dividir entre 0");
                         }
@@ -110,8 +110,8 @@ export class Aritmetica extends Expresion{
                     throw new Error_(this.linea, this.columna, "Semantico", "Tipos Incompatibles");
                 }
                 switch(tipoDominante){
-                    case Type.NUMBER:{
-                        return{value:(leftValue.value * rightValue.value), type: Type.NUMBER}
+                    case Type.INTEGER:{
+                        return{value:(leftValue.value * rightValue.value), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
                         return{value:(leftValue.value * rightValue.value), type: Type.DOBLE}
@@ -131,8 +131,8 @@ export class Aritmetica extends Expresion{
                 }
 
                 switch(tipoDominante){
-                    case Type.NUMBER:{
-                        return{value:(Math.pow(leftValue.value, rightValue.value)), type: Type.NUMBER}
+                    case Type.INTEGER:{
+                        return{value:(Math.pow(leftValue.value, rightValue.value)), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
                         return{value:(Math.pow(leftValue.value, rightValue.value)), type: Type.DOBLE}
@@ -152,8 +152,8 @@ export class Aritmetica extends Expresion{
                 }
 
                 switch(tipoDominante){
-                    case Type.NUMBER:{
-                        return{value:(leftValue.value % rightValue.value), type: Type.NUMBER}
+                    case Type.INTEGER:{
+                        return{value:(leftValue.value % rightValue.value), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
                         return{value:(leftValue.value % rightValue.value), type: Type.DOBLE}
