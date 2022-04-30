@@ -248,6 +248,7 @@ while
 
 do_while
     : TK_DO statement TK_WHILE TK_PARIZQ condicion TK_PARDER    {$$ = new While($7,$2, @1.first_line, @1.first_column)}
+    | TK_DO error TK_LLAVDER                           {new Error_(@1.first_line, @1.first_column, "Sintactico", "Token no esperado")}
     ;
 
 
