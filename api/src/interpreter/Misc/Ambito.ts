@@ -27,6 +27,8 @@ export class Ambito{
                 const val = env.variables.get(id)
                 if(val.type == type){
                     env.variables.set(id, new Simbolo(value,id,type))
+                }else if (val.type == Type.DOBLE && type == Type.INTEGER){
+                    env.variables.set(id, new Simbolo(value,id,type))
                 }else{
                     throw new Error_(linea, columna, 'Semantico', 'No se puede asignar: ' + Type[type] + ' a ' + Type[val.type]);
                 }
@@ -137,16 +139,24 @@ export class Ambito{
     }
 
 
-    public crearVector2(id:string, type:Type, largo_i:number, largo_j:number, linea: number, columna: number){
-        let array = [];
+    public crearVector2(id:string, type:Type, largo_i:number, largo_j:number, linea: number, columna: number , vacio:boolean){
+        if(vacio){
+            this.vectores2.set(id, new Vector2([], id, largo_i, largo_j, type))
+            Program.agregarTabla(new SimboloTabla(id,"Vector",Type[type],this.nombre,linea,columna))
+        }else{
+            let array = [];
 
-        for(let i = 0; i < largo_i; i++){
-            let array2 = new Array(largo_j);
-            array.push(array2)
+            for(let i = 0; i < largo_i; i++){
+                let array2 = new Array(largo_j);
+                array.push(array2)
+                console.log()
+            }
+
+            console.log("array: " + array)
+
+            this.vectores2.set(id, new Vector2(array, id, largo_i, largo_j, type))
+            Program.agregarTabla(new SimboloTabla(id,"Vector",Type[type],this.nombre,linea,columna))
         }
-
-        this.vectores2.set(id, new Vector2(array, id, largo_i, largo_j, type))
-        Program.agregarTabla(new SimboloTabla(id,"Vector",Type[type],this.nombre,linea,columna))
     }
 
     public setVector2(id:string, value:any, type:Type, index_i:number, index_j:number, linea: number, columna: number){

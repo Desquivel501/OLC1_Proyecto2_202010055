@@ -5,7 +5,12 @@ export enum Type{
     CHAR,
     STRING, 
     VOID, 
-    VECTOR
+    VECTOR,
+    VECTOR_INTEGER,
+    VECTOR_DOBLE,
+    VECTOR_BOOLEAN,
+    VECTOR_CHAR,
+    VECTOR_STRING,
 }
 
 export type Retorno = {

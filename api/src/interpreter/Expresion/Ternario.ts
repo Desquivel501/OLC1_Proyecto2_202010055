@@ -15,6 +15,10 @@ export class Ternario extends Expresion{
         const rightValue = this.right.execute(ambito);
         const condicionValue = this.condicion.execute(ambito);
 
+        if(condicionValue.type != Type.BOOLEAN){
+            throw new Error_(this.linea, this.columna, "Semantico", "La condicion en un operador ternario debe de dar como resultado un BOOLEAN");
+        }
+
         console.log(condicionValue.value);
         if(condicionValue.value){
             return{value:(leftValue.value ), type: leftValue.type}

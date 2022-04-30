@@ -14,6 +14,10 @@ export class Print extends Instruccion{
             const val = value.execute(ambito)
             let cadena = val.value;
 
+            if(val.value == null || val.value == undefined){
+                continue;
+            }
+
             if(typeof cadena == "string"){
                 cadena = cadena.replace(/\\n/,"\n")
                 cadena = cadena.replace(/\\\\/,"\\")
@@ -22,7 +26,7 @@ export class Print extends Instruccion{
                 cadena = cadena.replace(/\\t/,"\t")
             }
 
-            if(val.type == Type.VECTOR){
+            if(this.isVector(val.type)){
                 if(Array.isArray(val.value)){
                     let vector = ""
                     for(const valor of val.value){
@@ -41,6 +45,23 @@ export class Print extends Instruccion{
         }
         if(this.newLine){
             Program.consola += "\n";
+        }
+    }
+
+    private isVector(tipo:Type){
+        switch(tipo){
+            case Type.VECTOR_INTEGER:
+                return true
+            case Type.VECTOR_DOBLE:
+                return true
+            case Type.VECTOR_CHAR:
+                return true
+            case Type.VECTOR_BOOLEAN:
+                return true
+            case Type.VECTOR_STRING:  
+                return true
+            default:
+                return false
         }
     }
 

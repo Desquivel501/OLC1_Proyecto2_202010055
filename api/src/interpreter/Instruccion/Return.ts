@@ -9,8 +9,13 @@ export class Return extends Instruccion {
     }
 
     public execute(ambito: Ambito) {
-        const valor = this.value.execute(ambito)
-        return { type: 'Return', value: valor , line: this.linea, column: this.columna}
+        if(this.value != null){
+            const valor = this.value.execute(ambito)
+            return { type: 'Return', value: valor , line: this.linea, column: this.columna}
+        }else{
+            return { type: 'Return', value: null , line: this.linea, column: this.columna}
+        }
+
     }
 
     public graficar(padre:number){
@@ -19,8 +24,8 @@ export class Return extends Instruccion {
         Program.AST += "Nodo" + nodo + '[label="Return"]'+ "\n"
         Program.AST += "Nodo" + padre + " -> Nodo" + nodo+ "\n"
 
-        this.value.graficar(nodo)
-
-
+        if(this.value != null){
+            this.value.graficar(nodo)
+        }
     }
 }

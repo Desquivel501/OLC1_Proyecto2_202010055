@@ -9,6 +9,7 @@ export class Program {
     static listaErrores = []
 
     static tablaSimbolos = []
+    
     static agregarTabla(nuevo:SimboloTabla){
         for(const val of this.tablaSimbolos){
             if(val.id == nuevo.id && val.entorno == nuevo.entorno){
@@ -18,6 +19,22 @@ export class Program {
         this.tablaSimbolos.push(nuevo)
     }
     static imprimirTabla(){
+
+        if(this.tablaSimbolos.length > 1000){
+            console.log("here-----------------")
+            let dot = `digraph G { 
+                node[shape = plaintext] 
+                a[label=<
+                <TABLE style="border-collapse: collapse; width: 100%; height: 126px;" border="1">
+                <TR>
+                <TD style="text-align: center;">Tabla muy grande para ser mostrada</TD>
+                </TR>
+                </TABLE>>]
+                    
+                }`
+            return dot
+        }
+
         let dot =  `digraph G {
 node[shape = plaintext]
 a[ label =<

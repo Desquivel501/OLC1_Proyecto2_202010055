@@ -8,22 +8,19 @@ import { Program } from "../Misc/Program";
 
 export class Declaracion extends Instruccion{
     constructor(private tipo:Type, private ids:string[], private value:Expresion, private nueva:boolean, linea, columna){
-        super(linea, columna)
+        super(linea, columna)   
     }
 
     public execute(ambito: Ambito) {
         if(this.nueva){
             if(this.value != null){
                 const val = this.value.execute(ambito)
-                if(val.type == this.tipo){
-                    for(const id of this.ids){
-                        if(ambito.getVal(id) != null){
-                            throw new Error_(this.linea, this.columna, 'Semantico', 'La variable "' + id + '" ya ha sido declarada');
-                        }
-                        ambito.setVal(id, val.value, val.type, this.linea, this.columna)
+
+                for(const id of this.ids){
+                    if(ambito.getVal(id) != null){
+                        throw new Error_(this.linea, this.columna, 'Semantico', 'La variable "' + id + '" ya ha sido declarada');
                     }
-                }else{
-                    throw new Error_(this.linea, this.columna, 'Semantico', 'No se puede asignar: ' +  Type[val.type] + ' a ' + Type[this.tipo]);
+                    ambito.setVal(id, val.value, val.type, this.linea, this.columna)
                 }
             }else{
                 for(const id of this.ids){
@@ -72,7 +69,9 @@ export class Declaracion extends Instruccion{
         Program.AST += "Nodo" + igual + '[label="="]'+ "\n"
         Program.AST += "Nodo" + declaracion + " -> Nodo" + igual+ "\n"
 
-        this.value.graficar(declaracion)
+        if(this.value != null){
+            this.value.graficar(declaracion)
+        }
     }
 }
 

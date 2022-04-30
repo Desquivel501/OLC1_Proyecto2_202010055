@@ -4,6 +4,7 @@ import { Expresion } from "./Expresion";
 import { Retorno } from "./Retorno";
 import {Type, defaults} from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { REFUSED } from "dns";
 
 export class Acceso extends Expresion{
     constructor(private id:string, linea:number, columna:number){
@@ -14,10 +15,15 @@ export class Acceso extends Expresion{
         const value = ambito.getVal(this.id)
         if(value != null) return {value:value.valor, type:value.type}
 
+        console.log(this.id)
+
         if(ambito.tipoVector(this.id) == 1){
             console.log("here1")
             const vec = ambito.getVector1(this.id)
-            return {value: vec.valor, type: Type.VECTOR}
+
+            
+
+            return {value: vec.valor, type: this.getTipo(vec.type)}
 
              
         }else if(ambito.tipoVector(this.id) == 2){
@@ -40,10 +46,25 @@ export class Acceso extends Expresion{
                 }
                 vector.push(sub_vector)
             }
-            return {value: vector, type: Type.VECTOR}
+            return {value: vector, type: this.getTipo(vec.type)}
         }
 
         throw new Error_(this.linea, this.columna, 'Semantico', `No se encuentra la variable "${this.id}"`);
+    }
+
+    private getTipo(tipo:Type){
+        switch(tipo){
+            case Type.INTEGER:
+                return Type.VECTOR_INTEGER
+            case Type.DOBLE:
+                return Type.VECTOR_DOBLE 
+            case Type.CHAR:
+                return Type.VECTOR_CHAR
+            case Type.BOOLEAN:
+                return Type.VECTOR_BOOLEAN
+            case Type.STRING:
+                return Type.VECTOR_STRING  
+        }
     }
 
     public graficar(padre:number){

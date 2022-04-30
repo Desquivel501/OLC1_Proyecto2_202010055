@@ -19,7 +19,7 @@ export class Length extends Instruccion{
             const cadena = valorActual.value;
             return {value: cadena.length, type: Type.INTEGER}
 
-        }else if(valorActual.type == Type.VECTOR){
+        }else if(this.isVector(valorActual.type)){
             const vector = valorActual.value;
             console.log(" ")
             console.log(vector)
@@ -28,6 +28,23 @@ export class Length extends Instruccion{
         
         else{
             throw new Error_(this.linea, this.columna, "Semantico", "El valor de la funcion length() debe ser de tipo STRING o VECTOR");
+        }
+    }
+
+    private isVector(tipo:Type){
+        switch(tipo){
+            case Type.VECTOR_INTEGER:
+                return true
+            case Type.VECTOR_DOBLE:
+                return true
+            case Type.VECTOR_CHAR:
+                return true
+            case Type.VECTOR_BOOLEAN:
+                return true
+            case Type.VECTOR_STRING:  
+                return true
+            default:
+                return false
         }
     }
 

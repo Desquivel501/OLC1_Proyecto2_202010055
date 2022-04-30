@@ -3,9 +3,10 @@ import { Instruccion } from "./Instruccion";
 import { Error_ } from "../Error/Error";
 import { Type } from "../Expresion/Retorno";
 import { Program } from "../Misc/Program";
+import { Statement } from "./Statement";
 
 export class While extends Instruccion{
-    constructor(private condicion, private cuerpo: Instruccion , linea, columna){
+    constructor(private condicion, private cuerpo: Statement , linea, columna){
         super(linea, columna)
     }
 
@@ -14,6 +15,7 @@ export class While extends Instruccion{
         let condicion = this.condicion.execute(ambito);
         const nombre = "While (" + Program.noWhile + ")"
         Program.noWhile++;
+        this.cuerpo.nombre = nombre;
         if(condicion.type != Type.BOOLEAN){
             throw new Error_(this.linea, this.columna, "Semantico", "La condicion de un While debe ser de tipo BOOLEAN");
         }

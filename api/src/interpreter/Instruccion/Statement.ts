@@ -1,6 +1,7 @@
 import { Ambito } from "../Misc/Ambito";
 import { Instruccion } from "./Instruccion";
 import { Program } from "../Misc/Program";
+import { Type } from "../Expresion/Retorno";
 export class Statement extends Instruccion{
     public nombre:string = null;
     constructor(private codigo:Instruccion[], linea, columna){
@@ -12,9 +13,13 @@ export class Statement extends Instruccion{
         for(const inst of this.codigo){
             try{
                 const element = inst.execute(newAmbito);
-                if(element != null || element != undefined) return element;
+                if(element != null || element != undefined){
+                    if(!(element.type == Type.VOID)){
+                        return element;
+                    }
+                } 
             }catch(error){
-                // console.log(error)
+                console.log(error)
             }
         }
     }

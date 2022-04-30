@@ -52,6 +52,12 @@ export class Aritmetica extends Expresion{
 
                     }
                     case Type.DOBLE:{
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) + rightValue.value), type: Type.DOBLE}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value + rightValue.value.toString().charCodeAt(0)), type: Type.DOBLE}
+                        }
                         return{value: leftValue.value + rightValue.value, type: Type.DOBLE}
                     }
                     default:{
@@ -73,6 +79,12 @@ export class Aritmetica extends Expresion{
                         return{value:(leftValue.value - rightValue.value), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) - rightValue.value), type: Type.DOBLE}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value - rightValue.value.toString().charCodeAt(0)), type: Type.DOBLE}
+                        }
                         return{value:(leftValue.value - rightValue.value), type: Type.DOBLE}
                     }
                     default:{
@@ -90,11 +102,23 @@ export class Aritmetica extends Expresion{
                         if(rightValue.value == 0){
                             throw new Error_(this.linea, this.columna, "Semantico", "No se puede dividir entre 0");
                         }
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) / rightValue.value), type: Type.DOBLE}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value / rightValue.value.toString().charCodeAt(0)), type: Type.DOBLE}
+                        }
                         return{value:(leftValue.value / rightValue.value), type: Type.DOBLE}
                     }
                     case Type.DOBLE:{
                         if(rightValue.value == 0){
                             throw new Error_(this.linea, this.columna, "Semantico", "No se puede dividir entre 0");
+                        }
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) / rightValue.value), type: Type.DOBLE}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value / rightValue.value.toString().charCodeAt(0)), type: Type.DOBLE}
                         }
                         return{value:(leftValue.value / rightValue.value), type: Type.DOBLE}
                     }
@@ -111,9 +135,21 @@ export class Aritmetica extends Expresion{
                 }
                 switch(tipoDominante){
                     case Type.INTEGER:{
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) * rightValue.value), type: Type.INTEGER}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value * rightValue.value.toString().charCodeAt(0)), type: Type.INTEGER}
+                        }
                         return{value:(leftValue.value * rightValue.value), type: Type.INTEGER}
                     }
                     case Type.DOBLE:{
+                        if(leftValue.type == Type.CHAR && rightValue.type != Type.CHAR){
+                            return{value:(leftValue.value.toString().charCodeAt(0) * rightValue.value), type: Type.DOBLE}
+                        }
+                        if(leftValue.type != Type.CHAR && rightValue.type == Type.CHAR){
+                            return{value:(leftValue.value * rightValue.value.toString().charCodeAt(0)), type: Type.DOBLE}
+                        }
                         return{value:(leftValue.value * rightValue.value), type: Type.DOBLE}
                     }
                     default:{
@@ -207,7 +243,9 @@ export class Aritmetica extends Expresion{
             case TipoAritmetico.MODULO:
                 return "%"
             case TipoAritmetico.INCRE:
-                return ""
+                return "++"
+            case TipoAritmetico.DECRE:
+                return "++"
         }
     }
 }

@@ -7,12 +7,19 @@ import { Program } from "../Misc/Program";
 import { Statement } from "./Statement";
 
 export class Funcion extends Instruccion{
+
+    public id_num:number = 0;
+
     constructor(public id, public statement: Statement, public parametros: Array<Parametro>, public tipo: Type, linea, columna){
         super(linea, columna)
     }
 
     public execute(ambito: Ambito) {
         ambito.guardarFuncion(this.id, this);
+    }
+
+    public getNum(){
+        return this.id_num;
     }
 
     public graficar(padre:number){

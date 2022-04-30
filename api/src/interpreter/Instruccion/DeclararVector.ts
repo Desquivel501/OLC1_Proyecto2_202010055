@@ -35,9 +35,7 @@ export class DeclararVector1 extends Instruccion{
                     const val = value.execute(ambito);
                     ambito.setVector1(this.id,val.value,val.type,i,this.linea,this.columna);
                     i++;
-                } 
-                // ambito.setLergoVector1(this.id,i)
-                
+                }          
             }
         }else if(largo.value  > 0){
             ambito.crearVector1(this.id, this.tipo1, largo.value , this.linea, this.columna)
@@ -47,6 +45,7 @@ export class DeclararVector1 extends Instruccion{
     }
 
     public graficar(padre:number){
+        console.log("HERE----------------------------------------")
         let declaracion = Program.getNodo()
         let tipo1 = Program.getNodo()
         let tipo2 = Program.getNodo()
@@ -122,7 +121,7 @@ export class DeclararVector2 extends Instruccion{
 
             if(this.values.length > 0 && this.values[0].length > 0){
                 console.log(this.tipo1)
-                ambito.crearVector2(this.id,this.tipo1,this.values.length,this.values[0].length,this.linea,this.columna);
+                ambito.crearVector2(this.id,this.tipo1,this.values.length,this.values[0].length,this.linea,this.columna, true);
 
                 let i = 0;
                 let j = 0;
@@ -141,11 +140,9 @@ export class DeclararVector2 extends Instruccion{
                     j = 0;
                     i++;
                 } 
-                // ambito.setLergoVector1(this.id,i)
-                
             }
         }else if(largo1.value  > 0 && largo2.value > 0){
-            ambito.crearVector2(this.id, this.tipo1, largo1.value, largo2.value, this.linea, this.columna);
+            ambito.crearVector2(this.id, this.tipo1, largo1.value, largo2.value, this.linea, this.columna, false);
         }else{
             throw new Error_(this.linea, this.columna, 'Semantico', 'Largo del vector invalido');
         }

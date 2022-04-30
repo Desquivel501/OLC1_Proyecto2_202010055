@@ -27,11 +27,8 @@ function App() {
 
   const editorRef = useRef(null);
 
-  function Click(){
-    enviar() 
-    useForceUpdate()
-  }
-  
+  let fileReader;
+
 
   function handleEditorDidMount(editor, monaco) {
     editorRef.current = editor; 
@@ -62,22 +59,55 @@ function App() {
     })
   }
 
+  const onChange = e => {
+    e.preventDefault()
+    const reader = new FileReader()
+    reader.onload = async (e) => { 
+      const text = (e.target.result)
+      editorRef.current.setValue(text);
+    };
+    reader.readAsText(e.target.files[0])
+  };
+
+  const saveFile = async () => {
+    const blob = new Blob([editorRef.current.getValue()], {type : 'application/plain'});
+    const a = document.createElement('a');
+    a.download = 'archivo.cst';
+    a.href = URL.createObjectURL(blob);
+    a.addEventListener('click', (e) => {
+      setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+    });
+    a.click();
+  };
+
+  function limpiar() {
+    editorRef.current.setValue(" ")
+    document.getElementById('terminal').value = " "
+    ast = "graph G{}"
+    tabla = "graph G{}"
+    errores = "graph G{}"
+
+    document.getElementById('update').click()
+  }
+
+
   return (
     
     <div class="main-div">
 
-      <div class="titulo">Editor de texto</div>
+      <div class="titulo">Compscript</div>
 
       <div class='wrapper'>
         <div class='row'>
           <div class='column'>
-            <button class="button">Crear Archivo</button>
+            <button class="button" onClick={limpiar} >Nuevo Archivo</button>
           </div>
           <div class='column'>
-            <button class="button">Abrir archivo</button>
+              <input id="fileInput" type="file" onChange={onChange} style={{ display: "none" }} />
+              <button onClick={() => document.getElementById('fileInput').click()} class="button" >Cargar Archivo</button>
           </div>
           <div class='column'>
-            <button class="button">Guardar el archivo</button>
+            <button onClick={saveFile} class="button" >Guardar Archivo</button>
           </div>
         </div>
       </div>
@@ -107,6 +137,7 @@ function App() {
           </div>
           <div class='column'>
             <button class="button" onClick={forceUpdate}>Generar Reportes</button>
+            <button id="update" style={{ display: "none" }} onClick={forceUpdate}></button>
           </div>
         </div>
       </div>
@@ -121,11 +152,13 @@ function App() {
 
       <div class='wrapper_graph' id="graphviz">
         <div class="sub_titulo">Tabla de Simbolos</div>
-        <Graphviz 
-          classname = "canvas" 
-          dot={tabla}
-          options = {Options}
-        />
+            <Graphviz 
+              classname = "canvas" 
+              dot={tabla}
+              options = {Options}
+            />
+
+
       </div>
 
       <div class='wrapper_graph' id="graphviz">
